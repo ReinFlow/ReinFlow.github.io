@@ -18,9 +18,9 @@
             max-width: 800px;
             margin: 0 auto;
         }
-        embed {
-            width: 100%;
-            height: 600px;
+        img {
+            max-width: 100%;
+            height: auto;
             margin-bottom: 10px;
         }
         .caption {
@@ -41,14 +41,13 @@
 <body>
     <h1>ReinFlow: Finetuning Flow-matching Policy with Online Reinforcement Learning</h1>
     <div class="figure-container">
-        <embed src="architecture_shortcut_visual_with_noise.pdf" type="application/pdf">
+        <img src="ReinFlow.jpg" alt="Finetuning Flow-matching Policy with Online Reinforcement Learning Algorithm ReinFlow">
         <div class="caption">
             <p>Through interactions with the environment, the robot collects visual and proprioceptive signals, from which a pre-trained policy extracts features and outputs the next action's velocity field <span class="math">v<sub>θ</sub></span>. 
             A noise injection network <span class="math">σ<sub>θ'</sub></span> shares the extracted features with <span class="math">v<sub>θ</sub></span> and outputs a Gaussian noise that smoothens the flow's deterministic ODE path, converting flows to a discrete-time Markov process with Gaussian transition probabilities. 
             The noise injection yields a simple and exact likelihood expression at any denoising steps, which is friendly for policy gradient optimization. 
             The noise injection net <span class="math">σ<sub>θ'</sub></span>, surrounded by the dot lines, is co-trained with <span class="math">v<sub>θ</sub></span> but will be discarded after fine-tuning.</p>
         </div>
-        <p>Can't view the PDF? <a href="architecture_shortcut_visual_with_noise.pdf">Download it here</a>.</p>
     </div>
 </body>
 </html>
