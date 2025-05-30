@@ -247,10 +247,39 @@
         .indented-paragraph {
             text-indent: 30px;
         }
+        .subfigure-row {
+        display: flex;
+        justify-content: center;
+        gap: 0; /* or set a small gap if desired */
+        margin: 0;
+        padding: 0;
+        }
+        .subfigure {
+        flex: 0 0 24%;
+        margin: 0;
+        padding: 0;
+        }
+        
+        
     </style>
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <h1>ReinFlow: Fine-tuning Flow Matching Policy with Online Reinforcement Learning</h1>
+<h1>ReinFlow: Fine-tuning Flow Matching Policy with Online Reinforcement Learning</h1>
+<div style="text-align: center; margin: 20px 0;">
+  <a href="https://github.com/ReinFlow/ReinFlow" 
+     style="background-color: #333; color: white; 
+     padding: 8px 16px; 
+     border-radius: 20px; 
+     text-decoration: none; 
+     font-family: Arial, sans-serif; 
+     display: inline-flex; 
+     align-items: center; 
+     justify-content: center;">
+    <i class="fab fa-github" style="margin-right: 10px;"></i> Code
+  </a>
+</div>
     <div class="figure-container">
         <img src="figs/jpgs/ReinFlow.jpg" alt="schematic">
         <div class="caption">
@@ -365,100 +394,116 @@
 
 
     <section id="env-setup">
-        <h3>1. Environment and Data</h3>
-        <table style="width: 100%; border-collapse: collapse; text-align: left;">
-            <thead>
-            <tr>
-                <th style="border-bottom: 2px solid #333; padding: 8px;">Input Type</th>
-                <th style="border-bottom: 2px solid #333; padding: 8px;">Reward Type</th>
-                <th style="border-bottom: 2px solid #333; padding: 8px;">Environment</th>
-                <th style="border-bottom: 2px solid #333; padding: 8px;">Data Source</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td style="padding: 8px;">State</td>
-                <td style="padding: 8px;">Dense</td>
-                <td style="padding: 8px;">OpenAI Gym</td>
-                <td style="padding: 8px;">D4RL data</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px;">State</td>
-                <td style="padding: 8px;">Sparse</td>
-                <td style="padding: 8px;">Franka Kitchen</td>
-                <td style="padding: 8px;">Human-teleoperated data from D4RL</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px;">Visual</td>
-                <td style="padding: 8px;">Sparse</td>
-                <td style="padding: 8px;">Robomimic</td>
-                <td style="padding: 8px;">Human-teleoperated data processed like DPPO's paper</td>
-            </tr>
-            </tbody>
-        </table>
-        <div style="margin-top: 20px; text-align: center;">
-            <button onclick="toggleTaskImages()" style="font-size: 1em; padding: 8px 16px; cursor: pointer;">Click Here to Show specific tasks</button>
-        </div>
-        <div id="task-images" style="display: none; margin-top: 20px;">
-            <div class="figure-container" style="text-align: center;">
-                <div class="subfigure-row" style="justify-content: center; margin-left: 0; margin-right: 0;">
-                    <div class="subfigure" style="max-width: 24%;">
-                        <img id="hopper-img" src="./figs/jpgs/Hopper-page1.jpg" alt="Hopper">
-                        <div class="subfigure-caption" style="text-align: center;">(A) Hopper</div>
-                    </div>
-                    <div class="subfigure" style="max-width: 24%;">
-                        <img id="walker2d-img" src="./figs/jpgs/Walker2d-page1.jpg" alt="Walker2d">
-                        <div class="subfigure-caption" style="text-align: center;">(B) Walker2d</div>
-                    </div>
-                    <div class="subfigure" style="max-width: 24%;">
-                        <img id="ant-img" src="./figs/jpgs/Ant-page1.jpg" alt="Ant">
-                        <div class="subfigure-caption" style="text-align: center;">(C) Ant</div>
-                    </div>
-                    <div class="subfigure" style="max-width: 24%;">
-                        <img id="humanoid-img" src="./figs/jpgs/Humanoid-page1.jpg" alt="Humanoid">
-                        <div class="subfigure-caption" style="text-align: center;">(D) Humanoid</div>
-                    </div>
-                </div>
-                <div class="caption" style="text-align: center;">
-                    OpenAI Gym locomotion tasks: Hopper, Walker2d, Ant, and Humanoid.
-                </div>
-            </div>
-            <div class="figure-container" style="text-align: center;">
-                <div class="subfigure-row" style="justify-content: center; margin-left: 0; margin-right: 0;">
-                    <div class="subfigure" style="max-width: 24%;">
-                        <img id="kitchen-img" src="./figs/jpgs/kitchen-page1.jpg" alt="Franka Kitchen">
-                        <div class="subfigure-caption" style="text-align: center;">(A) Franka Kitchen</div>
-                    </div>
-                    <div class="subfigure" style="max-width: 24%;">
-                        <img id="can-img" src="./figs/jpgs/can-page1.jpg" alt="PickPlaceCan">
-                        <div class="subfigure-caption" style="text-align: center;">(B) PickPlaceCan</div>
-                    </div>
-                    <div class="subfigure" style="max-width: 24%;">
-                        <img id="square-img" src="./figs/jpgs/square-page1.jpg" alt="NutAssemblySquare">
-                        <div class="subfigure-caption" style="text-align: center;">(C) NutAssemblySquare</div>
-                    </div>
-                    <div class="subfigure" style="max-width: 24%;">
-                        <img id="transport-img" src="./figs/jpgs/transport-page1.jpg" alt="TwoArmTransport">
-                        <div class="subfigure-caption" style="text-align: center;">(D) TwoArmTransport</div>
-                    </div>
-                </div>
-                <div class="caption" style="text-align: center;">
-                    Manipulation tasks in state-input Franka Kitchen and pixel-input Robomimic environments.
-                </div>
-            </div>
-        </div>
-        <script>
-            function toggleTaskImages() {
-                const taskImages = document.getElementById('task-images');
-                if (taskImages.style.display === 'none') {
-                    taskImages.style.display = 'block';
-                } else {
-                    taskImages.style.display = 'none';
-                }
-            }
-        </script>
-    </section>
+    <h3>1. Environment and Data</h3>
+    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+        <tr>
+            <th style="border-bottom: 2px solid #333; padding: 8px;">Input Type</th>
+            <th style="border-bottom: 2px solid #333; padding: 8px;">Reward Type</th>
+            <th style="border-bottom: 2px solid #333; padding: 8px;">Environment</th>
+            <th style="border-bottom: 2px solid #333; padding: 8px;">Data Source</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="padding: 8px;">State</td>
+            <td style="padding: 8px;">Dense</td>
+            <td style="padding: 8px;">OpenAI Gym</td>
+            <td style="padding: 8px;">D4RL data</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px;">State</td>
+            <td style="padding: 8px;">Sparse</td>
+            <td style="padding: 8px;">Franka Kitchen</td>
+            <td style="padding: 8px;">Human-teleoperated data from D4RL</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px;">Visual</td>
+            <td style="padding: 8px;">Sparse</td>
+            <td style="padding: 8px;">Robomimic</td>
+            <td style="padding: 8px;">Human-teleoperated data processed like DPPO's paper</td>
+        </tr>
+        </tbody>
+    </table>
 
+    <div style="margin-top: 20px; text-align: center;">
+        <button id="toggleButton" onclick="toggleTaskImages()" style="font-size: 1em; padding: 8px 16px; cursor: pointer;">
+        Click Here to Show specific tasks
+        </button>
+    </div>
+
+        <div id="task-images" style="display: none; margin-top: 20px;">
+        <div class="figure-container" style="text-align: center;">
+        <div class="subfigure-row" style="justify-content: center; margin: 0; padding: 0;">
+            <div class="subfigure" style="max-width: 24%; display: inline-block; vertical-align: top; margin: 0; padding: 0;">
+            <img id="hopper-img" src="./figs/jpgs/Hopper-page1.jpg" alt="Hopper"
+                style="width: 180px; height: 120px; margin: 0; padding: 0; object-fit: fill; display: block;">
+            <div class="subfigure-caption" style="text-align: center; margin: 0;">(A) Hopper</div>
+            </div>
+            <div class="subfigure" style="max-width: 24%; display: inline-block; vertical-align: top; margin: 0; padding: 0;">
+            <img id="walker2d-img" src="./figs/jpgs/Walker2d-page1.jpg" alt="Walker2d"
+                style="width: 180px; height: 120px; margin: 0; padding: 0; object-fit: fill; display: block;">
+            <div class="subfigure-caption" style="text-align: center; margin: 0;">(B) Walker2d</div>
+            </div>
+            <div class="subfigure" style="max-width: 24%; display: inline-block; vertical-align: top; margin: 0; padding: 0;">
+            <img id="ant-img" src="./figs/jpgs/Ant-page1.jpg" alt="Ant"
+                style="width: 180px; height: 120px; margin: 0; padding: 0; object-fit: fill; display: block;">
+            <div class="subfigure-caption" style="text-align: center; margin: 0;">(C) Ant</div>
+            </div>
+            <div class="subfigure" style="max-width: 24%; display: inline-block; vertical-align: top; margin: 0; padding: 0;">
+            <img id="humanoid-img" src="./figs/jpgs/Humanoid-page1.jpg" alt="Humanoid"
+                style="width: 180px; height: 120px; margin: 0; padding: 0; object-fit: fill; display: block;">
+            <div class="subfigure-caption" style="text-align: center; margin: 0;">(D) Humanoid</div>
+            </div>
+        </div>
+        <div class="caption" style="text-align: center; margin-top: 8px;">
+            OpenAI Gym locomotion tasks: Hopper, Walker2d, Ant, and Humanoid.
+        </div>
+        </div>
+
+        <div class="figure-container" style="text-align: center; margin-top: 30px;">
+        <div class="subfigure-row" style="justify-content: center; margin: 0; padding: 0;">
+            <div class="subfigure" style="max-width: 24%; display: inline-block; vertical-align: top; margin: 0; padding: 0;">
+            <img id="kitchen-img" src="./figs/jpgs/kitchen-page1.jpg" alt="Franka Kitchen"
+                style="width: 180px; height: 120px; margin: 0; padding: 0; object-fit: fill; display: block;">
+            <div class="subfigure-caption" style="text-align: center; margin: 0;">(A) Franka Kitchen</div>
+            </div>
+            <div class="subfigure" style="max-width: 24%; display: inline-block; vertical-align: top; margin: 0; padding: 0;">
+            <img id="can-img" src="./figs/jpgs/can-page1.jpg" alt="PickPlaceCan"
+                style="width: 180px; height: 120px; margin: 0; padding: 0; object-fit: fill; display: block;">
+            <div class="subfigure-caption" style="text-align: center; margin: 0;">(B) PickPlaceCan</div>
+            </div>
+            <div class="subfigure" style="max-width: 24%; display: inline-block; vertical-align: top; margin: 0; padding: 0;">
+            <img id="square-img" src="./figs/jpgs/square-page1.jpg" alt="NutAssemblySquare"
+                style="width: 180px; height: 120px; margin: 0; padding: 0; object-fit: fill; display: block;">
+            <div class="subfigure-caption" style="text-align: center; margin: 0;">(C) NutAssemblySquare</div>
+            </div>
+            <div class="subfigure" style="max-width: 24%; display: inline-block; vertical-align: top; margin: 0; padding: 0;">
+            <img id="transport-img" src="./figs/jpgs/transport-page1.jpg" alt="TwoArmTransport"
+                style="width: 180px; height: 120px; margin: 0; padding: 0; object-fit: fill; display: block;">
+            <div class="subfigure-caption" style="text-align: center; margin: 0;">(D) TwoArmTransport</div>
+            </div>
+        </div>
+        <div class="caption" style="text-align: center; margin-top: 8px;">
+            Manipulation tasks in state-input Franka Kitchen and pixel-input Robomimic environments.
+        </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTaskImages() {
+        const taskImages = document.getElementById('task-images');
+        const toggleButton = document.getElementById('toggleButton');
+        if (taskImages.style.display === 'none') {
+            taskImages.style.display = 'block';
+            toggleButton.textContent = 'Click Here to Hide Specific Tasks';
+        } else {
+            taskImages.style.display = 'none';
+            toggleButton.textContent = 'Click Here to Show specific tasks';
+        }
+        }
+    </script>
+    </section>
 
 
 
