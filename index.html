@@ -190,29 +190,70 @@
     <div class="figure-container">
         <img src="figs/jpgs/ReinFlow.jpg" alt="schematic">
         <div class="caption">
-            <p>Fine-tuning Flow Matching Policy with Online Reinforcement Learning Algorithm ReinFlow. Through interactions with the environment, the robot collects visual and proprioceptive signals, from which a pre-trained policy extracts features and outputs the next action's velocity field $v_\theta$. 
+            <!-- <p>Fine-tuning Flow Matching Policy with ReinFlow. 
+            Through interactions with the environment, the robot collects visual and proprioceptive signals, 
+            from which a pre-trained policy extracts features and outputs the next action's velocity field $v_\theta$. 
             A noise injection network $\sigma_{\theta^\prime}$ shares the extracted features with $v_\theta$ and outputs a Gaussian noise that smoothens the flow's deterministic ODE path, converting flows to a discrete-time Markov process with Gaussian transition probabilities. 
             The noise injection yields a simple and exact likelihood expression at any denoising steps, which is friendly for policy gradient optimization. 
-            The noise injection net $\sigma_{\theta^\prime}$, surrounded by the dot lines, is co-trained with $v_\theta$ but will be discarded after fine-tuning.</p>
+            The noise injection net $\sigma_{\theta^\prime}$, surrounded by the dot lines, is co-trained with $v_\theta$ but will be discarded after fine-tuning.</p> -->
+            <ul>
+            <p>Fine-tuning flow matching policy with ReinFlow involves these steps:</p>
+            <!-- <ul> -->
+            <li><b>1. Rollout</b>: The robot interacts with the environment online and gathers visual and proprioceptive observation. </li>
+            <li><b>2. Extract Features</b>: A pre-trained policy backbone extracts visuomotor features and feeds them to the velocity field $v_\theta$, which guides the next action's changes.</li>
+            <li><b>3. Add Noise</b>: The network $\sigma_{\theta^\prime}$ shares extracted features with the velocity net and outputs Gaussian noise to smooth the ODE path for likelihood evaluation. </li>
+            <li><b>4. Co-train and Discard</b>: The network $\sigma_{\theta^\prime}$ co-trains with $v_\theta$ only during fine-tuning and is discarded afterward.</li>
+            <!-- </ul>          -->
+            </ul>
         </div>
     </div>
 
     <section id="experiments">
         <h2>Experiments</h2>
-        <p>We test ReinFlow's in simulated robot learning tasks, enhancing pre-trained flow matching policies with minimal fine-tuning steps.</p>
-        <p>Using a stable PPO-based approach, we focus on wall time efficiency in simulations. 
-            <!-- , leaving sample-efficient RL for future research.</p> -->
-        <p>We compare ReinFlow to DPPO and FQL, strong RL methods for policy fine-tuning, with additional baselines in the Appendix.</p>
+        <p><b>Our goal:</b> increase the <b>success rate</b> for pre-trained flow policies at <b>minimal</b> denoising steps.</p>
+        <p><b>Wall time efficiency</b> is our focus for simulated tasks. 
+        <p><b>Baselines</b> include DPPO, FQL, Gaussian, etc. Additional baselines are listed in the Appendix.</p>
     </section>
 
-    <section id="env-setup">
+    <!-- <section id="env-setup">
         <h3>Environment and Data</h3>
-        <p>We evaluate in locomotion and manipulation tasks, using state/pixel inputs with dense/sparse rewards.<b>
-            OpenAI Gym:</b> We fine-tune policies in trained on D4RL data, except "Humanoid-v3" with our SAC agent's data. 
-            <b>Franka Kitchen:</b> We train a robot for multitask planning with human-teleoperated data from D4RL. 
-            <b>Robomimic:</b> We tackle visual manipulation with human-teleported data processed like DPPO's paper.</p>
-    </section> 
-
+        <p> <b>State input, dense reward locomotion</b> in OpenAI Gym using D4RL data</p>
+        <p> <b>State input, sparse reward</b>in Franka Kitchen using human-teleoperated data from D4RL. </p>
+        <p> <b>Visual input, sparse reward Manipulation</b> in Robomimic using human-teleported data processed like DPPO's paper.</p>
+    </section>  -->
+    <section id="env-setup">
+    <h3>Environment and Data</h3>
+    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+        <tr>
+            <th style="border-bottom: 2px solid #333; padding: 8px;">Input Type</th>
+            <th style="border-bottom: 2px solid #333; padding: 8px;">Reward Type</th>
+            <th style="border-bottom: 2px solid #333; padding: 8px;">Environment</th>
+            <th style="border-bottom: 2px solid #333; padding: 8px;">Data Source</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="padding: 8px;">State <strong></strong></td>
+            <td style="padding: 8px;">Dense</td>
+            <td style="padding: 8px;">OpenAI Gym</td>
+            <td style="padding: 8px;">D4RL data</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px;">State<strong></strong></td>
+            <td style="padding: 8px;"><strong>Sparse</strong></td></td>
+            <td style="padding: 8px;">Franka Kitchen</td>
+            <td style="padding: 8px;">Human-teleoperated data from D4RL</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px;"><strong>Visual</strong></td>
+            <td style="padding: 8px;"><strong>Sparse</strong></td></td>
+            <td style="padding: 8px;">Robomimic</td>
+            <td style="padding: 8px;">Human-teleoperated data processed like DPPO's paper</td>
+        </tr>
+        </tbody>
+    </table>
+    </section>
     <section id="performance-evaluation">
         <h3>Performance Evaluation</h3>
         <p>ReinFlow consistently improves performance across all tasks, excelling in Gym and Franka Kitchen benchmarks.</p>
