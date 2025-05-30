@@ -34,6 +34,7 @@
             font-size: 1.8em;
             color: #34495e;
             margin-top: 40px;
+            margin-bottom: 30px; /* Added for spacing below sections */
             border-bottom: 2px solid #3498db;
             padding-bottom: 5px;
         }
@@ -41,10 +42,20 @@
             font-size: 1.4em;
             color: #34495e;
             margin-top: 30px;
+            margin-bottom: 20px; /* Increased for subsection spacing */
+        }
+        h4 {
+            font-size: 1.2em;
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 15px; /* Added for subsection spacing */
         }
         p {
             font-size: 1.1em;
             margin: 10px 0;
+        }
+        section {
+            margin-bottom: 40px; /* Added for spacing between sections */
         }
         .figure-container {
             margin: 10px 0;
@@ -171,19 +182,18 @@
             object-fit: contain;
         }
         img[alt="schematic"] {
-            width: 90%;    /* or a fixed width like 600px */
-            height: auto;   /* auto height keeps aspect ratio */
-            display: block; /* remove inline spacing */
-            margin: 0 auto; /* center horizontally */
-            max-width: 800px; /* optional max width */
+            width: 90%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            max-width: 800px;
         }
         .subfigure img,
-        .subfigure-2 img{
+        .subfigure-2 img {
             width: 100%;
             height: 140px;
             object-fit: contain;
         }
-         /* Indent the first line of each paragraph by 30px */
         .indented-paragraph {
             text-indent: 30px;
         }
@@ -194,78 +204,65 @@
     <div class="figure-container">
         <img src="figs/jpgs/ReinFlow.jpg" alt="schematic">
         <div class="caption">
-            <!-- <p>Fine-tuning Flow Matching Policy with ReinFlow. 
-            Through interactions with the environment, the robot collects visual and proprioceptive signals, 
-            from which a pre-trained policy extracts features and outputs the next action's velocity field $v_\theta$. 
-            A noise injection network $\sigma_{\theta^\prime}$ shares the extracted features with $v_\theta$ and outputs a Gaussian noise that smoothens the flow's deterministic ODE path, converting flows to a discrete-time Markov process with Gaussian transition probabilities. 
-            The noise injection yields a simple and exact likelihood expression at any denoising steps, which is friendly for policy gradient optimization. 
-            The noise injection net $\sigma_{\theta^\prime}$, surrounded by the dot lines, is co-trained with $v_\theta$ but will be discarded after fine-tuning.</p> -->
             <ul>
             <p>Fine-tuning flow matching policy with ReinFlow involves these steps:</p>
-            <!-- <ul> -->
             <li><b>1. Rollout</b>: The robot interacts with the environment online and gathers visual and proprioceptive observation. </li>
             <li><b>2. Extract Features</b>: A pre-trained policy backbone extracts visuomotor features and feeds them to the velocity field $v_\theta$, which guides the next action's changes.</li>
             <li><b>3. Add Noise</b>: The network $\sigma_{\theta^\prime}$ shares extracted features with the velocity net and outputs Gaussian noise to smooth the ODE path for likelihood evaluation. </li>
             <li><b>4. Co-train and Discard</b>: The network $\sigma_{\theta^\prime}$ co-trains with $v_\theta$ only during fine-tuning and is discarded afterward.</li>
-            <!-- </ul>          -->
             </ul>
         </div>
     </div>
 
-   <section id="experiments">
-  <h2>Experiments</h2>
-  <ul style="list-style: none; padding-left: 0; font-family: Arial, sans-serif; max-width: 800px;">
-    <li style="margin-bottom: 12px;">
-      🎯 <strong>Goal:</strong> Increase success rate for pre-trained flow policies at minimal denoising steps
-    </li>
-    <li style="margin-bottom: 12px;">
-      ⏱️ <strong>Focus:</strong> Wall time efficiency for simulated tasks
-    </li>
-    <li>
-      📊 <strong>Baselines:</strong> DPPO, FQL, Gaussian, etc. (see Appendix for more)
-    </li>
-  </ul>
-</section>
-
-    <!-- <section id="env-setup">
-        <h3>Environment and Data</h3>
-        <p> <b>State input, dense reward locomotion</b> in OpenAI Gym using D4RL data</p>
-        <p> <b>State input, sparse reward</b>in Franka Kitchen using human-teleoperated data from D4RL. </p>
-        <p> <b>Visual input, sparse reward Manipulation</b> in Robomimic using human-teleported data processed like DPPO's paper.</p>
-    </section>  -->
-    <section id="env-setup">
-    <h3>Environment and Data</h3>
-    <table style="width: 100%; border-collapse: collapse; text-align: left;">
-        <thead>
-        <tr>
-            <th style="border-bottom: 2px solid #333; padding: 8px;">Input Type</th>
-            <th style="border-bottom: 2px solid #333; padding: 8px;">Reward Type</th>
-            <th style="border-bottom: 2px solid #333; padding: 8px;">Environment</th>
-            <th style="border-bottom: 2px solid #333; padding: 8px;">Data Source</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td style="padding: 8px;">State <strong></strong></td>
-            <td style="padding: 8px;">Dense</td>
-            <td style="padding: 8px;">OpenAI Gym</td>
-            <td style="padding: 8px;">D4RL data</td>
-        </tr>
-        <tr>
-            <td style="padding: 8px;">State<strong></strong></td>
-            <td style="padding: 8px;"><strong>Sparse</strong></td></td>
-            <td style="padding: 8px;">Franka Kitchen</td>
-            <td style="padding: 8px;">Human-teleoperated data from D4RL</td>
-        </tr>
-        <tr>
-            <td style="padding: 8px;"><strong>Visual</strong></td>
-            <td style="padding: 8px;"><strong>Sparse</strong></td></td>
-            <td style="padding: 8px;">Robomimic</td>
-            <td style="padding: 8px;">Human-teleoperated data processed like DPPO's paper</td>
-        </tr>
-        </tbody>
-    </table>
+    <section id="experiments">
+        <h2>Experiments</h2>
+        <ul style="list-style: none; padding-left: 0; font-family: Arial, sans-serif; max-width: 800px;">
+            <li style="margin-bottom: 12px;">
+                🎯 <strong>Goal:</strong> Increase success rate for pre-trained flow policies at minimal denoising steps
+            </li>
+            <li style="margin-bottom: 12px;">
+                ⏱️ <strong>Focus:</strong> Wall time efficiency for simulated tasks
+            </li>
+            <li>
+                📊 <strong>Baselines:</strong> DPPO, FQL, Gaussian, etc. (see Appendix for more)
+            </li>
+        </ul>
     </section>
+
+    <section id="env-setup">
+        <h3>Environment and Data</h3>
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+            <tr>
+                <th style="border-bottom: 2px solid #333; padding: 8px;">Input Type</th>
+                <th style="border-bottom: 2px solid #333; padding: 8px;">Reward Type</th>
+                <th style="border-bottom: 2px solid #333; padding: 8px;">Environment</th>
+                <th style="border-bottom: 2px solid #333; padding: 8px;">Data Source</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td style="padding: 8px;">State</td>
+                <td style="padding: 8px;">Dense</td>
+                <td style="padding: 8px;">OpenAI Gym</td>
+                <td style="padding: 8px;">D4RL data</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px;">State</td>
+                <td style="padding: 8px;"><strong>Sparse</strong></td>
+                <td style="padding: 8px;">Franka Kitchen</td>
+                <td style="padding: 8px;">Human-teleoperated data from D4RL</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px;"><strong>Visual</strong></td>
+                <td style="padding: 8px;"><strong>Sparse</strong></td>
+                <td style="padding: 8px;">Robomimic</td>
+                <td style="padding: 8px;">Human-teleoperated data processed like DPPO's paper</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
     <section id="performance-evaluation">
         <h3>Performance Evaluation</h3>
         <p>ReinFlow consistently improves performance across all tasks, excelling in Gym and Franka Kitchen benchmarks.</p>
@@ -276,7 +273,7 @@
                     <div class="subfigure-caption">(A) Hopper-v2</div>
                 </div>
                 <div class="subfigure">
-                    <img src="figs/jpgs/gym-state_walker-d4rl_AverageEpisodeReward_wallclock-page1.jpg"  alt="Walker-v2 Wall Time">
+                    <img src="figs/jpgs/gym-state_walker-d4rl_AverageEpisodeReward_wallclock-page1.jpg" alt="Walker-v2 Wall Time">
                     <div class="subfigure-caption">(B) Walker-v2</div>
                 </div>
                 <div class="subfigure">
@@ -383,14 +380,14 @@
         <p class="indented-paragraph">✅ Logit-normal </p>
         <p class="indented-paragraph">✅ Beta (slightly better for single-step fine-tuning.)</p>
         <h4>Noise Network Inputs</h4>
-            <p class="indented-paragraph" style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
+        <p class="indented-paragraph" style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
             <span style="font-size: 1.3em; margin-right: 8px;" aria-hidden="true">😊</span>
             Conditioning noise on state alone works well.
-            </p>
-            <p class="indented-paragraph" style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0;">
+        </p>
+        <p class="indented-paragraph" style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0;">
             <span style="font-size: 1.3em; margin-right: 8px;" aria-hidden="true">😄</span>
             Conditioning noise on both state and time generates more diverse actions and improves success rates.
-            </p>
+        </p>
         <div class="figure-container">
             <div class="subfigure-row">
                 <div class="subfigure-2">
@@ -407,27 +404,27 @@
             </div>
         </div>
         <h4>Noise Level and Exploration</h4>
-            <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
+        <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
             <span style="font-size: 1.3em; margin-right: 8px;">⚖️</span>
             Noise magnitude affects exploration: too little traps the policy, too much hurts execution.
-            </p>
-            <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
+        </p>
+        <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
             <span style="font-size: 1.3em; margin-right: 8px;">🚀</span>
             Optimal noise levels enable significant gains, especially in complex tasks.
-            </p>
-            <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0;">
+        </p>
+        <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0;">
             <span style="font-size: 1.3em; margin-right: 8px;">🔒</span>
             Policies become less sensitive to noise once in the correct region.
-            </p>
+        </p>
         <h4>Regularization and Exploration</h4>
-            <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
+        <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
             <span style="font-size: 1.3em; margin-right: 8px;">🏅</span>
             Entropy regularization promotes exploration, while behavior cloning regularization can trap the policy and is unnecessary.
-            </p>
-            <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0;">
+        </p>
+        <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0;">
             <span style="font-size: 1.3em; margin-right: 8px;">🏅</span>
             Entropy regularization outperforms Wasserstein-2 constraints used in offline RL methods like FQL.
-            </p>
+        </p>
         <div class="figure-container">
             <div class="subfigure-row">
                 <div class="subfigure-2">
