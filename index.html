@@ -183,6 +183,10 @@
             height: 140px;
             object-fit: contain;
         }
+         /* Indent the first line of each paragraph by 30px */
+        .indented-paragraph {
+            text-indent: 30px;
+        }
     </style>
 </head>
 <body>
@@ -208,12 +212,20 @@
         </div>
     </div>
 
-    <section id="experiments">
-        <h2>Experiments</h2>
-        <p><b>Our goal:</b> increase the <b>success rate</b> for pre-trained flow policies at <b>minimal</b> denoising steps.</p>
-        <p><b>Wall time efficiency</b> is our focus for simulated tasks. 
-        <p><b>Baselines</b> include DPPO, FQL, Gaussian, etc. Additional baselines are listed in the Appendix.</p>
-    </section>
+   <section id="experiments">
+  <h2>Experiments</h2>
+  <ul style="list-style: none; padding-left: 0; font-family: Arial, sans-serif; max-width: 600px;">
+    <li style="margin-bottom: 12px;">
+      🎯 <strong>Goal:</strong> Increase success rate for pre-trained flow policies at minimal denoising steps
+    </li>
+    <li style="margin-bottom: 12px;">
+      ⏱️ <strong>Focus:</strong> Wall time efficiency for simulated tasks
+    </li>
+    <li>
+      📊 <strong>Baselines:</strong> DPPO, FQL, Gaussian, etc. (see Appendix for more)
+    </li>
+  </ul>
+</section>
 
     <!-- <section id="env-setup">
         <h3>Environment and Data</h3>
@@ -337,8 +349,15 @@
     <section id="design-choice">
         <h3>The Design Choice and Key Factors Affecting ReinFlow</h3>
         <p>We examine how pre-trained models, denoising steps, noise levels, and regularization impact ReinFlow.</p>
-        <h4>Scaling</h4>
-        <p>Fine-tuning with ReinFlow consistently enhances performance, unlike simply scaling data or inference steps.</p>
+        <h4>RL Provides Another Scaling Dimension</h4>
+        <p class="indented-paragraph" style="font-family: Arial, sans-serif; max-width: 800px; line-height: 1.4;">
+            <span style="font-size: 1.2em; margin-right: 6px;">➖ </span>
+            Scaling data or inference steps: quickly plateaus.<br>
+        </p>
+        <p class="indented-paragraph">
+            <span style="font-size: 1.2em; margin-right: 6px;">📈</span>
+            Fine-tuning with RL (ReinFlow): consistently enhances performance. 
+        </p>
         <div class="figure-container">
             <div class="subfigure-row">
                 <div class="subfigure-3">
@@ -359,9 +378,19 @@
             </div>
         </div>
         <h4>Flow Matching's Time Distribution</h4>
-        <p>ReinFlow's performance is robust to changes in time sampling, with beta distribution slightly better for single-step fine-tuning.</p>
+        <p>ReinFlow's performance is robust to changes in time sampling. </p>
+        <p class="indented-paragraph">✅ Uniform </p>
+        <p class="indented-paragraph">✅ Logit-normal </p>
+        <p class="indented-paragraph">✅ Beta (slightly better for single-step fine-tuning.)</p>
         <h4>Noise Network Inputs</h4>
-        <p>Conditioning noise on both state and time improves success rates by enabling diverse action generation.</p>
+            <p class="indented-paragraph" style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
+            <span style="font-size: 1.3em; margin-right: 8px;" aria-hidden="true">😊</span>
+            Conditioning noise on state alone works well.
+            </p>
+            <p class="indented-paragraph" style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0;">
+            <span style="font-size: 1.3em; margin-right: 8px;" aria-hidden="true">😄</span>
+            Conditioning noise on both state and time generates more diverse actions and improves success rates.
+            </p>
         <div class="figure-container">
             <div class="subfigure-row">
                 <div class="subfigure-2">
@@ -378,9 +407,27 @@
             </div>
         </div>
         <h4>Noise Level and Exploration</h4>
-        <p>Noise magnitude crucially affects exploration; optimal levels enable significant performance gains, especially in complex tasks.</p>
+            <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
+            <span style="font-size: 1.3em; margin-right: 8px;">⚖️</span>
+            Noise magnitude affects exploration: too little traps the policy, too much hurts execution.
+            </p>
+            <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
+            <span style="font-size: 1.3em; margin-right: 8px;">🚀</span>
+            Optimal noise levels enable significant gains, especially in complex tasks.
+            </p>
+            <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0;">
+            <span style="font-size: 1.3em; margin-right: 8px;">🔒</span>
+            Policies become less sensitive to noise once in the correct region.
+            </p>
         <h4>Regularization and Exploration</h4>
-        <p>Entropy regularization aids exploration in locomotion tasks, outperforming Wasserstein-2 constraints used in offline RL methods like FQL.</p>
+            <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
+            <span style="font-size: 1.3em; margin-right: 8px;">🏅</span>
+            Entropy regularization promotes exploration, while behavior cloning regularization can trap the policy and is unnecessary.
+            </p>
+            <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0;">
+            <span style="font-size: 1.3em; margin-right: 8px;">🏅</span>
+            Entropy regularization outperforms Wasserstein-2 constraints used in offline RL methods like FQL.
+            </p>
         <div class="figure-container">
             <div class="subfigure-row">
                 <div class="subfigure-2">
