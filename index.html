@@ -262,14 +262,16 @@
         
         
     </style>
-    
+
+<!-- Include arXiv icon if not already loaded -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.2/css/academicons.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 <h1>ReinFlow: Fine-tuning Flow Matching Policy with Online Reinforcement Learning</h1>
-<div style="text-align: center; margin: 20px 0;">
+<div style="text-align: center; margin: 20px 0; display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
   <a href="https://github.com/ReinFlow/ReinFlow" 
-     style="background-color: #333; color: white; 
+     style="background-color: #000; color: white; 
      padding: 8px 16px; 
      border-radius: 20px; 
      text-decoration: none; 
@@ -279,19 +281,32 @@
      justify-content: center;">
     <i class="fab fa-github" style="margin-right: 10px;"></i> Code
   </a>
+
+  <!-- <a href="https://arxiv.org/abs/2505.22094" 
+     style="background-color: #000; color: white; 
+     padding: 8px 16px; 
+     border-radius: 20px; 
+     text-decoration: none; 
+     font-family: Arial, sans-serif; 
+     display: inline-flex; 
+     align-items: center; 
+     justify-content: center;">
+    <span style="font-size: 18px; margin-right: 10px;">📄</span> Paper
+  </a> -->
+
+  <!-- <a href="#" 
+     style="background-color: #000; color: white; 
+     padding: 8px 16px; 
+     border-radius: 20px; 
+     text-decoration: none; 
+     font-family: Arial, sans-serif; 
+     display: inline-flex; 
+     align-items: center; 
+     justify-content: center;">
+    <span style="font-size: 18px; margin-right: 10px;">🤗</span> Data
+  </a> -->
 </div>
-    <div class="figure-container">
-        <img src="figs/jpgs/ReinFlow.jpg" alt="schematic">
-        <div class="caption">
-            <ul>
-            <p>Fine-tuning flow matching policy with ReinFlow involves these steps:</p>
-            <li><b>1. Rollout</b>: The robot interacts with the environment online and gathers visual and proprioceptive observation. </li>
-            <li><b>2. Extract Features</b>: A pre-trained policy backbone extracts visuomotor features and feeds them to the velocity field $v_\theta$, which guides the next action's changes.</li>
-            <li><b>3. Add Noise</b>: The network $\sigma_{\theta^\prime}$ shares extracted features with the velocity net and outputs Gaussian noise to smooth the ODE path for likelihood evaluation. </li>
-            <li><b>4. Co-train and Discard</b>: The network $\sigma_{\theta^\prime}$ co-trains with $v_\theta$ only during fine-tuning and is discarded afterward.</li>
-            </ul>
-        </div>
-    </div>
+
 
 
 
