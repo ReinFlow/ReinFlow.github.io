@@ -102,20 +102,20 @@
         }
         .legend img {
             width: 600px;
-            height: 100px;
+            height: 100px; /* Reduced height for legend */
             object-fit: contain;
         }
         img[alt="Legend44"] {
             height: 40%;
-            width: 64%;
+            width: 64% ; /* Maintain aspect ratio auto */
         }
         img[alt="Legend4"] {
             height: 50%;
-            width: 80%;
+            width: 80% ; /* Maintain aspect ratio auto */
         }
         img[alt="Legend3"] {
             height: 20%;
-            width: 60%;
+            width: 60% ; /* Maintain aspect ratio auto */
         }
         .caption {
             font-size: 0.95em;
@@ -135,8 +135,9 @@
         a:hover {
             text-decoration: underline;
         }
+        /*Remove margins around figures*/
         .subfigure-row {
-            margin-bottom: 2px !important;
+            margin-bottom: 2px !important; /* Was 10px or more */
         }
         .figure-container.legend {
             margin-top: 0px !important;
@@ -145,6 +146,7 @@
             box-shadow: none !important;
             padding: 0 !important;
         }
+
         .figure-container.legend img[alt="Legend3"],
         .figure-container.legend img[alt="Legend4"] {
             margin: 0 !important;
@@ -154,8 +156,8 @@
             box-shadow: none !important;
             background: transparent !important;
             display: block;
-            width: 100%;
-            height: 40px;
+            width: 100%;   /* Or adjust as needed, e.g., 60% */
+            height: 40px;  /* Aggressively reduce height */
             object-fit: contain;
         }
         .figure-container.legend img[alt="Legend44"] {
@@ -166,46 +168,53 @@
             box-shadow: none !important;
             background: transparent !important;
             display: block;
-            width: 1000%;
-            height: 25px;
+            width: 1000%;   /* Or adjust as needed, e.g., 60% */
+            height: 25px;  /* Aggressively reduce height */
             object-fit: contain;
         }
     </style>
 </head>
 <body>
-    <h1>ReinFlow: Fine-tuning Flow Matching Policy with Online Reinforcement Learning</h1>
-    <div class="figure-container">
-        <img src="figs/ReinFlow.jpg" alt="Fine-tuning Flow Matching Policy with Online Reinforcement Learning Algorithm ReinFlow">
-        <div class="caption">
-            <p>Fine-tuning Flow Matching Policy with Online Reinforcement Learning Algorithm ReinFlow. Through interactions with the environment, the robot collects visual and proprioceptive signals, from which a pre-trained policy extracts features and outputs the next action's velocity field $v_\theta$. 
-            A noise injection network $\sigma_{\theta^\prime}$ shares the extracted features with $v_\theta$ and outputs a Gaussian noise that smoothens the flow's deterministic ODE path, converting flows to a discrete-time Markov process with Gaussian transition probabilities. 
-            The noise injection yields a simple and exact likelihood expression at any denoising steps, which is friendly for policy gradient optimization. 
-            The noise injection net $\sigma_{\theta^\prime}$, surrounded by the dot lines, is co-trained with $v_\theta$ but will be discarded after fine-tuning.</p>
-        </div>
-    </div>
+    <h1>ReinFlow: Experiments</h1>
+
+    <!-- Notes from tcolorbox -->
+    <!-- 1. Downsample FQL -->
+    <!-- 2. Add BC baselines to all figures -->
+    <!-- 3. Add pre-training model comparison plot in frequency view -->
+    <!-- Some important experiments left untouched: -->
+    <!-- 2. Using direct evaluation method with Hutchinson's trace estimators -->
+    <!-- Also should mention that at very few steps there is a large discretization error when using Euler integral to the equations derived from SDE -->
+    <!-- Say that we care more about simulation time than sample as this is not a real-world RL problem -->
+    <!-- For neps=16 square datascale just say fine-tuning failed and we use pre-trained policy's success rate -->
+    <!-- For transport-image task we test the wall-clock-time with osmesa as rendering with egl causes OOM problem -->
+    <!-- Really need to stress that we share the same batch size with DPPO as a fair comparison -->
+    <!-- The wall clock time comparison is unfair for FQL as the batch size is a lot smaller -->
+    <!-- Maybe FQL experiments need to be re-run to align with 500 steps of rollouts -->
 
     <section id="experiments">
         <h2>Experiments</h2>
-        <p>We test ReinFlow's in simulated robot learning tasks, enhancing pre-trained flow matching policies with minimal fine-tuning steps.</p>
-        <p>Using a stable PPO-based approach, we focus on wall time efficiency in simulations. 
-            <!-- , leaving sample-efficient RL for future research.</p> -->
-        <p>We compare ReinFlow to DPPO and FQL, strong RL methods for policy fine-tuning, with additional baselines in the Appendix.</p>
+        <p>We run simulated robot learning experiments to test the effectiveness and flexibility of our method, ReinFlow. We aim to adopt ReinFlow to significantly enhance the success rate of pre-trained flow matching policies trained on mediocre expert data. We also managed to fine-tune at very few or even one denoising step for Rectified Flow (indicated by "ReinFlow-R") and Shortcut Models (indicated by "ReinFlow-S"), where fine-tuning the two types of pre-trained models shares the same training hyperparameters.</p>
+        <p>We adopt a PPO-based implementation of our algorithm due to its stability. While alternative implementations may offer higher sample efficiency, we prioritize wall time efficiency in simulated environments over sample cost. Exploring more sample-efficient RL algorithms for ReinFlow, especially in real-world scenarios where data collection is expensive, is an interesting direction for future work.</p>
+        <p>We compare ReinFlow against various RL methods for fine-tuning diffusion and flow-based policies, particularly DPPO and FQL. DPPO is a strong online RL algorithm for diffusion policies, developed under a bi-level MDP formulation. FQL represents state-of-the-art offline RL for flow-matching policies and applies to offline-to-online fine-tuning. Comparisons to other baselines are provided in the Appendix.</p>
     </section>
 
     <section id="env-setup">
-        <h3>Environment and Data</h3>
-        <p>We evaluate in locomotion and manipulation tasks, using state/pixel inputs with dense/sparse rewards.<b>
-            OpenAI Gym:</b> We fine-tune policies in trained on D4RL data, except "Humanoid-v3" with our SAC agent's data. 
-            <b>Franka Kitchen:</b> We train a robot for multitask planning with human-teleoperated data from D4RL. 
-            <b>Robomimic:</b> We tackle visual manipulation with human-teleported data processed like DPPO's paper.</p>
-    </section> 
+        <h3>Environment Setup and Data Curation</h3>
+        <p>We compare the algorithms in locomotion tasks and four manipulation tasks. In locomotion tasks, the agent receives state input and dense reward, and it resembles how we train legged robots via sim2real RL in modern applications. We also consider more challenging and realistic manipulation tasks, where agents receive pixel and/or state inputs with sparse rewards.</p>
+        <h4>OpenAI Gym</h4>
+        <p>We fine-tuned flow matching policies with ReinFlow in "Hopper-v2", "Walker2d-v2", "Ant-v2", and "Humanoid-v3", where these tasks are listed in ascending difficulty. "Ant-v2" and "Humanoid-v3" environments involve high-dimensional state inputs and challenge continuous control problems. The expert data are demonstrations collected from the D4RL dataset, except for the "Humanoid-v3" task, where the data is sampled from our own pre-trained SAC agent, at medium or medium-expert level.</p>
+        <h4>Franka Kitchen</h4>
+        <p>In Franka Kitchen, a 9-DoF Franka robot learns long-horizon multitask planning by sequentially completing four state-based manipulation tasks. We pre-train the models with human-teleoperated data with complete, mixed, or partial demonstrations of the four tasks.</p>
+        <h4>Robomimic</h4>
+        <p>We train agents in visual manipulation tasks in Robomimic, including a simple pick-and-place task "PickPlaceCan" (Can), assembly task "NutAssemblySquare" (Square), and bi-manual manipulation task "TwoArmTransport" (Transport). Data are collected via human teleportation. The Robomimic datasets are further processed like DPPO, which contains data of lower quantity and/or quality than proficient human demonstrations.</p>
+    </section>
 
     <section id="performance-evaluation">
         <h3>Performance Evaluation</h3>
-        <p>ReinFlow consistently improves performance across all tasks, excelling in Gym and Franka Kitchen benchmarks.</p>
+        <p>ReinFlow demonstrates strong training stability with a significant reward or success rate net increase in all tasks. In Gym and Franka Kitchen benchmarks, it achieves the best overall efficiency and performance improvement.</p>
         <div class="figure-container">
-            <div class="subfigure-row">
-                <div class="subfigure">
+        <div class="subfigure-row">
+            <div class="subfigure">
                     <img src="figs/jpgs/gym-state_hopper-d4rl_AverageEpisodeReward_wallclock-page1.jpg" alt="Hopper-v2 Wall Time">
                     <div class="subfigure-caption">(A) Hopper-v2</div>
                 </div>
@@ -255,7 +264,7 @@
                 Task completion rates of state-input manipulation tasks in Franka Kitchen. (A) and (B) show the completion rates against the wall time and sample cost. We only show the sample cost plots for agents trained on mixed and partial datasets for brevity.
             </div>
         </div>
-        <p>In Robomimic tasks, ReinFlow boosts success rates by 40.09% with fewer steps and time than DPPO, using minimal denoising steps.</p>
+        <p>Across three Robomimic visual manipulation tasks, ReinFlow-S and ReinFlow-R improve the success rate of the pre-trained policy by an average of 40.09%. ReinFlow achieves success rates comparable to DPPO, requiring significantly fewer fine-tuning steps and less wall-clock time. Notably, it uses fewer denoising steps: just <i>one</i> in Can and Square, and a four-step flow in Transport, compared to the five-step DDIM used by DPPO.</p>
         <div class="figure-container">
             <div class="subfigure-row">
                 <div class="subfigure-3">
@@ -282,9 +291,9 @@
 
     <section id="design-choice">
         <h3>The Design Choice and Key Factors Affecting ReinFlow</h3>
-        <p>We examine how pre-trained models, denoising steps, noise levels, and regularization impact ReinFlow.</p>
+        <p>This section analyzes how the pre-trained model and denoising steps affect our algorithm. We also study the effects of the noise level, the type, and the intensity of regularization.</p>
         <h4>Scaling</h4>
-        <p>Fine-tuning with ReinFlow consistently enhances performance, unlike simply scaling data or inference steps.</p>
+        <p>We fine-tune flow matching policies trained on datasets with different numbers of episodes and test the performance of pre-trained and fine-tuned models at different denoising steps. The figure below reveals that scaling inference steps and/or pre-training data quantity does not consistently improve the reward, which is consistent with the findings in data scaling laws. However, ReinFlow consistently improves the success rate or reward over the pre-trained policies regardless of the pre-training scale.</p>
         <div class="figure-container">
             <div class="subfigure-row">
                 <div class="subfigure-3">
@@ -305,9 +314,9 @@
             </div>
         </div>
         <h4>Flow Matching's Time Distribution</h4>
-        <p>ReinFlow's performance is robust to changes in time sampling, with beta distribution slightly better for single-step fine-tuning.</p>
+        <p>The effectiveness of ReinFlow is not affected by altering the time sampling distribution of the pre-trained flow matching policy. However, beta distribution is slightly stronger when fine-tuning at one denoising step, as in the case in the figure above (C).</p>
         <h4>Noise Network Inputs</h4>
-        <p>Conditioning noise on both state and time improves success rates by enabling diverse action generation.</p>
+        <p>The inputs of the noise injection network affect the performance of fine-tuned flow policies. As shown in the figure below, conditioning on both observations and the time often yields a higher success rate, as this approach allows the noise network to learn how to create more diverse actions by altering the noise intensity at different denoising steps.</p>
         <div class="figure-container">
             <div class="subfigure-row">
                 <div class="subfigure-2">
@@ -324,9 +333,9 @@
             </div>
         </div>
         <h4>Noise Level and Exploration</h4>
-        <p>Noise magnitude crucially affects exploration; optimal levels enable significant performance gains, especially in complex tasks.</p>
+        <p>We find that the magnitude of the injected noise is the most significant factor affecting ReinFlow's performance. In the figure below (A), we add constant noise in 'Ant-v0' with different standard deviation levels. When the noise is minimal (std=0.01), the policy's reward remains around the pre-trained baseline, showing limited exploration. After enlarging the noise to a certain threshold, we find that the agent quickly explores new policies that are three times stronger than the base policy, after which ReinFlow becomes less sensitive to changes in noise level. We also discover that tuning down the noise is beneficial for visuomotor policies, complex tasks, long denoising chains, and policies with poor pre-training performance.</p>
         <h4>Regularization and Exploration</h4>
-        <p>Entropy regularization aids exploration in locomotion tasks, outperforming Wasserstein-2 constraints used in offline RL methods like FQL.</p>
+        <p>ReinFlow admits various regularizations, and we find that it is generally unnecessary to constrain the policy with a Wasserstein-2 regularizer while adding entropy regularization, which is beneficial in locomotion tasks. In the figure below (B), we train ReinFlow in a "Humanoid-v3" environment. By gradually tuning down the $W_2$ regularization coefficient $\beta$, the fine-tuned policy leaves the behavior cloning (BC) baseline and discovers significantly more robust actions, approaching the curve trained with entropy regularization of intensity $\alpha=0.03$. This finding also partially explains why the offline RL method FQL, which adopts $W_2$ distillation loss to restrict online exploration, performs worse than our pure online RL method ReinFlow.</p>
         <div class="figure-container">
             <div class="subfigure-row">
                 <div class="subfigure-2">
