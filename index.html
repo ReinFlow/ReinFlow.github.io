@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReinFlow: Fine-tuning Flow Matching Policy with Online Reinforcement Learning</title>
+    <title>ReinFlow Experiments</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
@@ -37,6 +37,11 @@
             border-bottom: 2px solid #3498db;
             padding-bottom: 5px;
         }
+        h3 {
+            font-size: 1.4em;
+            color: #34495e;
+            margin-top: 30px;
+        }
         p {
             font-size: 1.1em;
             margin: 10px 0;
@@ -47,19 +52,81 @@
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .subfigure-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .subfigure {
+            flex: 0 0 24%;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subfigure-3 {
+            flex: 0 0 32%;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subfigure-2 {
+            flex: 0 0 49%;
+            text-align: center;
+            margin-bottom: 10px;
         }
         img {
-            width: 100%;
-            height: auto;
+            width: 600px;
+            height: 400px;
+            object-fit: contain;
             border: 1px solid #ddd;
             border-radius: 4px;
             padding: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+        .subfigure img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+        }
+        .subfigure-3 img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+        }
+        .subfigure-2 img {
+            width: 100%;
+            height: 250px;
+            object-fit: contain;
+        }
+        .legend img {
+            width: 600px;
+            height: 100px;
+            object-fit: contain;
+        }
+        img[alt="Legend44"] {
+            height: 40%;
+            width: 64%;
+        }
+        img[alt="Legend4"] {
+            height: 50%;
+            width: 80%;
+        }
+        img[alt="Legend3"] {
+            height: 20%;
+            width: 60%;
         }
         .caption {
             font-size: 0.95em;
             color: #555;
             text-align: left;
             margin-top: 10px;
+        }
+        .subfigure-caption {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 5px;
         }
         a {
             color: #3498db;
@@ -68,78 +135,204 @@
         a:hover {
             text-decoration: underline;
         }
+        .subfigure-row {
+            margin-bottom: 2px !important;
+        }
+        .figure-container.legend {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+        .figure-container.legend img[alt="Legend3"],
+        .figure-container.legend img[alt="Legend4"] {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            background: transparent !important;
+            display: block;
+            width: 100%;
+            height: 40px;
+            object-fit: contain;
+        }
+        .figure-container.legend img[alt="Legend44"] {
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            background: transparent !important;
+            display: block;
+            width: 1000%;
+            height: 25px;
+            object-fit: contain;
+        }
     </style>
 </head>
 <body>
     <h1>ReinFlow: Fine-tuning Flow Matching Policy with Online Reinforcement Learning</h1>
 
-    <section id="introduction">
-        <h2>Introduction</h2>
-        <p>In robotics learning, imitation learning has been pivotal, enabling robots to replicate expert behaviors. Yet, scaling pre-training data with imitation learning hits a bottleneck—success rates plateau as data quality and quantity falter, limiting robots from surpassing suboptimal demonstrations. Enter <strong>ReinFlow</strong>, an innovative online reinforcement learning (RL) framework that fine-tunes flow matching policies, revolutionizing continuous robotic control.</p>
-        <p>We choose flow matching for its rising popularity and simplicity in large-scale models and systems. These models offer precision and speed, making them a robust choice for robot action generation. As data scaling laws reach their limits, <strong>sim2real RL</strong> emerges as the next paradigm for robotics learning, transferring simulation-learned policies to the real world—ReinFlow leads this charge.</p>
-        <p>Backed by a rigorous theoretical foundation, ReinFlow is a general policy gradient framework (with PPO as just one implementation), adaptable to various flow process solvers like Rectified Flows and Shortcut Policies. Explore how ReinFlow breaks through imitation learning’s constraints, delivering superior performance and efficiency.</p>
+    <section id="experiments">
+        <h2>Experiments</h2>
+        <p>We test ReinFlow's in simulated robot learning tasks, enhancing pre-trained flow matching policies with minimal fine-tuning steps.</p>
+        <p>Using a stable PPO-based approach, we focus on wall time efficiency in simulations. 
+            <!-- , leaving sample-efficient RL for future research.</p> -->
+        <p>We compare ReinFlow to DPPO and FQL, strong RL methods for policy fine-tuning, with additional baselines in the Appendix.</p>
     </section>
 
-    <section id="overview">
-        <h2>Overview of ReinFlow</h2>
+    <section id="env-setup">
+        <h3>Environment and Data</h3>
+        <p>We evaluate in locomotion and manipulation tasks, using state/pixel inputs with dense/sparse rewards.<b>
+            OpenAI Gym:</b> We fine-tune policies in trained on D4RL data, except "Humanoid-v3" with our SAC agent's data. 
+            <b>Franka Kitchen:</b> We train a robot for multitask planning with human-teleoperated data from D4RL. 
+            <b>Robomimic:</b> We tackle visual manipulation with human-teleported data processed like DPPO's paper.</p>
+    </section> 
+
+    <section id="performance-evaluation">
+        <h3>Performance Evaluation</h3>
+        <p>ReinFlow consistently improves performance across all tasks, excelling in Gym and Franka Kitchen benchmarks.</p>
         <div class="figure-container">
-            <img src="figs/ReinFlow.jpg" alt="ReinFlow Algorithm Overview">
+            <div class="subfigure-row">
+                <div class="subfigure">
+                    <img src="figs/jpgs/gym-state_hopper-d4rl_AverageEpisodeReward_wallclock-page1.jpg" alt="Hopper-v2 Wall Time">
+                    <div class="subfigure-caption">(A) Hopper-v2</div>
+                </div>
+                <div class="subfigure">
+                    <img src="figs/jpgs/gym-state_walker-d4rl_AverageEpisodeReward_wallclock-page1.jpg" alt="Walker-v2 Wall Time">
+                    <div class="subfigure-caption">(B) Walker-v2</div>
+                </div>
+                <div class="subfigure">
+                    <img src="figs/jpgs/gym-state_ant-d4rl_AverageEpisodeReward_wallclock-page1.jpg" alt="Ant-v2 Wall Time">
+                    <div class="subfigure-caption">(C) Ant-v2</div>
+                </div>
+                <div class="subfigure">
+                    <img src="figs/jpgs/gym-state_humanoid-d4rl_AverageEpisodeReward_wallclock-page1.jpg" alt="Humanoid-v3 Wall Time">
+                    <div class="subfigure-caption">(D) Humanoid-v3</div>
+                </div>
+            </div>
+            <div class="figure-container legend">
+                <img src="figs/jpgs/gym-state_hopper-d4rl_AverageEpisodeReward_legend_crop-page1.jpg" alt="Legend44">
+            </div>
             <div class="caption">
-                Fine-tuning Flow Matching Policy with Online Reinforcement Learning Algorithm ReinFlow. Through interactions with the environment, the robot collects visual and proprioceptive signals, from which a pre-trained policy extracts features and outputs the next action’s velocity field $v_\theta$. A noise injection network $\sigma_{\theta^\prime}$ shares these features and outputs Gaussian noise, smoothing the flow’s deterministic ODE path into a discrete-time Markov process. This enables exact likelihood computation at any denoising step, optimizing policy gradients efficiently. The noise network, co-trained with $v_\theta$ and discarded post-fine-tuning, is shown within dotted lines.
+                Wall time efficiency results of state-based locomotion tasks in OpenAI Gym. Dashed lines indicate the behavior cloning level.
+            </div>
+        </div>
+        <div class="figure-container">
+            <div class="subfigure-row">
+                <div class="subfigure">
+                    <img src="figs/jpgs/kitchen_kitchen-complete-v0_TaskCompletionRate_wallclock-page1.jpg" alt="Kitchen-complete Wall Time">
+                    <div class="subfigure-caption">(A) Kitchen-complete</div>
+                </div>
+                <div class="subfigure">
+                    <img src="figs/jpgs/kitchen_kitchen-complete-v0_TaskCompletionRate-page1.jpg" alt="Kitchen-complete Sample">
+                    <div class="subfigure-caption">(B) Kitchen-complete</div>
+                </div>
+                <div class="subfigure">
+                    <img src="figs/jpgs/kitchen_kitchen-mixed-v0_TaskCompletionRate-page1.jpg" alt="Kitchen-mixed Sample">
+                    <div class="subfigure-caption">(C) Kitchen-mixed</div>
+                </div>
+                <div class="subfigure">
+                    <img src="figs/jpgs/kitchen_kitchen-partial-v0_TaskCompletionRate-page1.jpg" alt="Kitchen-partial Sample">
+                    <div class="subfigure-caption">(D) Kitchen-partial</div>
+                </div>
+            </div>
+            <div class="figure-container legend">
+                <img src="figs/jpgs/kitchen_kitchen-complete-v0_TaskCompletionRate_legend_crop-page1.jpg" alt="Legend3">
+            </div>
+            <div class="caption">
+                Task completion rates of state-input manipulation tasks in Franka Kitchen. (A) and (B) show the completion rates against the wall time and sample cost. We only show the sample cost plots for agents trained on mixed and partial datasets for brevity.
+            </div>
+        </div>
+        <p>In Robomimic tasks, ReinFlow boosts success rates by 40.09% with fewer steps and time than DPPO, using minimal denoising steps.</p>
+        <div class="figure-container">
+            <div class="subfigure-row">
+                <div class="subfigure-3">
+                    <img src="figs/jpgs/robomimic-img_can-img_SuccessRate-page1.jpg" alt="Can Success Rate">
+                    <div class="subfigure-caption">(A) Can</div>
+                </div>
+                <div class="subfigure-3">
+                    <img src="figs/jpgs/robomimic-img_square-img_SuccessRate-page1.jpg" alt="Square Success Rate">
+                    <div class="subfigure-caption">(B) Square</div>
+                </div>
+                <div class="subfigure-3">
+                    <img src="figs/jpgs/robomimic-img_transport-img_SuccessRate-page1.jpg" alt="Transport Success Rate">
+                    <div class="subfigure-caption">(C) Transport</div>
+                </div>
+            </div>
+            <div class="figure-container legend">
+                <img src="figs/jpgs/robomimic-img_can-img_SuccessRate_legend_crop-page1.jpg" alt="Legend4">
+            </div>
+            <div class="caption">
+                Success rates in visual manipulation tasks in Robomimic.
             </div>
         </div>
     </section>
 
-    <section id="locomotion">
-        <h2>Performance in Locomotion Tasks</h2>
+    <section id="design-choice">
+        <h3>The Design Choice and Key Factors Affecting ReinFlow</h3>
+        <p>We examine how pre-trained models, denoising steps, noise levels, and regularization impact ReinFlow.</p>
+        <h4>Scaling</h4>
+        <p>Fine-tuning with ReinFlow consistently enhances performance, unlike simply scaling data or inference steps.</p>
         <div class="figure-container">
-            <img src="figs/jpg/gym-state_ant-d4rl_AverageEpisodeReward.jpg" alt="Ant-v2 Reward Curve">
+            <div class="subfigure-row">
+                <div class="subfigure-3">
+                    <img src="figs/jpgs/avg_episode_reward_3d_surface-page1.jpg" alt="ReFlow Policy in Hopper-v2">
+                    <div class="subfigure-caption">(A) ReFlow Policy in Hopper-v2</div>
+                </div>
+                <div class="subfigure-3">
+                    <img src="figs/jpgs/datascale_shortcut_square_success_rate_2d-page1.jpg" alt="Shortcut Policy in Square">
+                    <div class="subfigure-caption">(B) Shortcut Policy in Square</div>
+                </div>
+                <div class="subfigure-3">
+                    <img src="figs/jpgs/robomimic-img_square-img-logitbeta_SuccessRate-page1.jpg" alt="ReFlow Policy in Square">
+                    <div class="subfigure-caption">(C) ReFlow Policy in Square</div>
+                </div>
+            </div>
             <div class="caption">
-                Average episode reward in the Ant-v2 task (OpenAI Gym). ReinFlow significantly boosts rewards over pre-trained policies and baselines like DPPO and FQL, achieving a 225.81% net increase with stability across training.
+                RL provides another way of scaling apart from increasing pre-training data and inference consumption, which has a plateauing effect. The improvement is invariant of flow policy’s time distribution and is achievable at four steps in Hopper (A) and one step in Square (B, C).
             </div>
         </div>
+        <h4>Flow Matching's Time Distribution</h4>
+        <p>ReinFlow's performance is robust to changes in time sampling, with beta distribution slightly better for single-step fine-tuning.</p>
+        <h4>Noise Network Inputs</h4>
+        <p>Conditioning noise on both state and time improves success rates by enabling diverse action generation.</p>
         <div class="figure-container">
-            <img src="figs/jpg/gym-state_humanoid-d4rl_AverageEpisodeReward_wallclock.jpg" alt="Humanoid-v3 Wall-clock Efficiency">
+            <div class="subfigure-row">
+                <div class="subfigure-2">
+                    <img src="figs/jpgs/noise_parameterization_ant-page1.jpg" alt="Noise Input's Effect in Ant-v0">
+                    <div class="subfigure-caption">(A) Noise Input's Effect in Ant-v0</div>
+                </div>
+                <div class="subfigure-2">
+                    <img src="figs/jpgs/kitchen_kitchen-partial-v0-sigma_s_t_SuccessRate-page1.jpg" alt="Noise Condition's Effect in Kitchen-partial">
+                    <div class="subfigure-caption">(B) Noise Condition's Effect in Kitchen-partial</div>
+                </div>
+            </div>
             <div class="caption">
-                Wall-clock time efficiency in Humanoid-v3. ReinFlow delivers higher rewards in less time than competitors, slashing wall-clock time by 62.82% on average compared to DPPO, showcasing its practical efficiency.
+                Conditioning on state and time yields a higher success rate than only conditioning on states.
             </div>
         </div>
-    </section>
-
-    <section id="manipulation">
-        <h2>Performance in Manipulation Tasks</h2>
+        <h4>Noise Level and Exploration</h4>
+        <p>Noise magnitude crucially affects exploration; optimal levels enable significant performance gains, especially in complex tasks.</p>
+        <h4>Regularization and Exploration</h4>
+        <p>Entropy regularization aids exploration in locomotion tasks, outperforming Wasserstein-2 constraints used in offline RL methods like FQL.</p>
         <div class="figure-container">
-            <img src="figs/jpg/kitchen_kitchen-complete-v0_TaskCompletionRate.jpg" alt="Franka Kitchen Completion Rate">
+            <div class="subfigure-row">
+                <div class="subfigure-2">
+                    <img src="figs/jpgs/constant_noise_level-page1.jpg" alt="Noise Level Affects Exploration in Ant-v0">
+                    <div class="subfigure-caption">(A) Noise Level Affects Exploration in Ant-v0</div>
+                </div>
+                <div class="subfigure-2">
+                    <img src="figs/jpgs/gym-state_humanoid-regularize-compare_AverageEpisodeReward-page1.jpg" alt="Regularization Affects ReinFlow in Humanoid-v3">
+                    <div class="subfigure-caption">(B) Regularization Affects ReinFlow in Humanoid-v3</div>
+                </div>
+            </div>
             <div class="caption">
-                Task completion rates in Franka Kitchen (complete demonstrations). ReinFlow achieves near-perfect rates, outperforming other methods in speed and final performance, with a 23.01% net success rate increase.
+                Noise level and regularization's effect. (A) demonstrates constant noise with different standard deviation affects ReinFlow's exploration. (B) shows how entropy regularization with coefficient $\alpha$ and $W_2$ regularization with different coefficients $\beta$ influences ReinFlow.
             </div>
         </div>
-        <div class="figure-container">
-            <img src="figs/jpg/can.jpg" alt="Robomimic Can Success Rate">
-            <div class="caption">
-                Success rates in the Robomimic Can task (visual inputs, sparse rewards). ReinFlow enhances performance with just one denoising step, yielding a 40.67% net increase, comparable to DPPO’s five-step DDIM while saving 23.20% computation time.
-            </div>
-        </div>
-    </section>
-
-    <section id="efficiency">
-        <h2>Efficiency and Scalability</h2>
-        <div class="figure-container">
-            <img src="figs/jpg/avg_episode_reward_3d_surface.jpg" alt="Scaling Performance 3D Plot">
-            <div class="caption">
-                3D surface plot showing pre-training data scale, inference steps, and performance. While scaling data or steps plateaus, ReinFlow’s fine-tuning offers an orthogonal scaling path, boosting performance beyond imitation learning limits.
-            </div>
-        </div>
-    </section>
-
-    <section id="theory">
-        <h2>Theoretical Foundation</h2>
-        <p>ReinFlow is rooted in a general policy gradient theorem for discrete-time Markov processes, enabling exact likelihood computation even at minimal denoising steps. This ensures stable, efficient optimization, with unbiased gradients providing a robust mathematical backbone. PPO is merely one implementation—ReinFlow’s flexibility extends to various RL algorithms and flow solvers like Rectified Flows and Shortcut Policies.</p>
-    </section>
-
-    <section id="conclusion">
-        <h2>Conclusion</h2>
-        <p>ReinFlow transforms robotics learning by overcoming imitation learning’s bottlenecks, leveraging flow matching’s simplicity, and pioneering sim2real RL. With a 135.36% average reward increase in locomotion tasks and a 40.34% success rate boost in manipulation tasks, all while cutting computational costs, ReinFlow sets a new standard. Dive into the <a href="https://reinflow.github.io/">full paper</a> and join the future of robotic control.</p>
     </section>
 </body>
 </html>
