@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReinFlow: Finetuning Flow-matching Policy with Online Reinforcement Learning</title>
-    <!-- MathJax CDN for LaTeX rendering -->
+    <title>ReinFlow: Fine-tuning Flow Matching Policy with Online Reinforcement Learning</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
@@ -18,44 +17,129 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 20px;
+            line-height: 1.6;
+            margin: 0 auto;
+            max-width: 900px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
         }
         h1 {
-            font-size: 2em;
+            font-size: 2.5em;
+            color: #2c3e50;
+            text-align: center;
             margin-bottom: 20px;
         }
+        h2 {
+            font-size: 1.8em;
+            color: #34495e;
+            margin-top: 40px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        p {
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
         .figure-container {
-            max-width: 800px;
-            margin: 0 auto;
+            margin: 20px 0;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         img {
-            max-width: 100%;
+            width: 100%;
             height: auto;
-            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
         }
         .caption {
-            font-size: 0.9em;
-            line-height: 1.5;
+            font-size: 0.95em;
+            color: #555;
             text-align: left;
-            max-width: 800px;
-            margin: 0 auto 20px;
+            margin-top: 10px;
         }
-        .caption p {
-            margin: 0;
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <h1>ReinFlow: Fine-tuning Flow Matching Policy with Online Reinforcement Learning</h1>
-    <div class="figure-container">
-        <img src="figs/ReinFlow.jpg" alt="Fine-tuning Flow Matching Policy with Online Reinforcement Learning Algorithm ReinFlow">
-        <div class="caption">
-            <p>Fine-tuning Flow Matching Policy with Online Reinforcement Learning Algorithm ReinFlow. Through interactions with the environment, the robot collects visual and proprioceptive signals, from which a pre-trained policy extracts features and outputs the next action's velocity field $v_\theta$. 
-            A noise injection network $\sigma_{\theta^\prime}$ shares the extracted features with $v_\theta$ and outputs a Gaussian noise that smoothens the flow's deterministic ODE path, converting flows to a discrete-time Markov process with Gaussian transition probabilities. 
-            The noise injection yields a simple and exact likelihood expression at any denoising steps, which is friendly for policy gradient optimization. 
-            The noise injection net $\sigma_{\theta^\prime}$, surrounded by the dot lines, is co-trained with $v_\theta$ but will be discarded after fine-tuning.</p>
+
+    <section id="introduction">
+        <h2>Introduction</h2>
+        <p>In robotics learning, imitation learning has been pivotal, enabling robots to replicate expert behaviors. Yet, scaling pre-training data with imitation learning hits a bottleneck—success rates plateau as data quality and quantity falter, limiting robots from surpassing suboptimal demonstrations. Enter <strong>ReinFlow</strong>, an innovative online reinforcement learning (RL) framework that fine-tunes flow matching policies, revolutionizing continuous robotic control.</p>
+        <p>We choose flow matching for its rising popularity and simplicity in large-scale models and systems. These models offer precision and speed, making them a robust choice for robot action generation. As data scaling laws reach their limits, <strong>sim2real RL</strong> emerges as the next paradigm for robotics learning, transferring simulation-learned policies to the real world—ReinFlow leads this charge.</p>
+        <p>Backed by a rigorous theoretical foundation, ReinFlow is a general policy gradient framework (with PPO as just one implementation), adaptable to various flow process solvers like Rectified Flows and Shortcut Policies. Explore how ReinFlow breaks through imitation learning’s constraints, delivering superior performance and efficiency.</p>
+    </section>
+
+    <section id="overview">
+        <h2>Overview of ReinFlow</h2>
+        <div class="figure-container">
+            <img src="figs/ReinFlow.jpg" alt="ReinFlow Algorithm Overview">
+            <div class="caption">
+                Fine-tuning Flow Matching Policy with Online Reinforcement Learning Algorithm ReinFlow. Through interactions with the environment, the robot collects visual and proprioceptive signals, from which a pre-trained policy extracts features and outputs the next action’s velocity field $v_\theta$. A noise injection network $\sigma_{\theta^\prime}$ shares these features and outputs Gaussian noise, smoothing the flow’s deterministic ODE path into a discrete-time Markov process. This enables exact likelihood computation at any denoising step, optimizing policy gradients efficiently. The noise network, co-trained with $v_\theta$ and discarded post-fine-tuning, is shown within dotted lines.
+            </div>
         </div>
-    </div>
+    </section>
+
+    <section id="locomotion">
+        <h2>Performance in Locomotion Tasks</h2>
+        <div class="figure-container">
+            <img src="figs/gym-state_ant-d4rl_AverageEpisodeReward.pdf" alt="Ant-v2 Reward Curve">
+            <div class="caption">
+                Average episode reward in the Ant-v2 task (OpenAI Gym). ReinFlow significantly boosts rewards over pre-trained policies and baselines like DPPO and FQL, achieving a 225.81% net increase with stability across training.
+            </div>
+        </div>
+        <div class="figure-container">
+            <img src="figs/gym-state_humanoid-d4rl_AverageEpisodeReward_wallclock.pdf" alt="Humanoid-v3 Wall-clock Efficiency">
+            <div class="caption">
+                Wall-clock time efficiency in Humanoid-v3. ReinFlow delivers higher rewards in less time than competitors, slashing wall-clock time by 62.82% on average compared to DPPO, showcasing its practical efficiency.
+            </div>
+        </div>
+    </section>
+
+    <section id="manipulation">
+        <h2>Performance in Manipulation Tasks</h2>
+        <div class="figure-container">
+            <img src="figs/kitchen_kitchen-complete-v0_TaskCompletionRate.pdf" alt="Franka Kitchen Completion Rate">
+            <div class="caption">
+                Task completion rates in Franka Kitchen (complete demonstrations). ReinFlow achieves near-perfect rates, outperforming other methods in speed and final performance, with a 23.01% net success rate increase.
+            </div>
+        </div>
+        <div class="figure-container">
+            <img src="figs/can.pdf" alt="Robomimic Can Success Rate">
+            <div class="caption">
+                Success rates in the Robomimic Can task (visual inputs, sparse rewards). ReinFlow enhances performance with just one denoising step, yielding a 40.67% net increase, comparable to DPPO’s five-step DDIM while saving 23.20% computation time.
+            </div>
+        </div>
+    </section>
+
+    <section id="efficiency">
+        <h2>Efficiency and Scalability</h2>
+        <div class="figure-container">
+            <img src="figs/avg_episode_reward_3d_surface.pdf" alt="Scaling Performance 3D Plot">
+            <div class="caption">
+                3D surface plot showing pre-training data scale, inference steps, and performance. While scaling data or steps plateaus, ReinFlow’s fine-tuning offers an orthogonal scaling path, boosting performance beyond imitation learning limits.
+            </div>
+        </div>
+    </section>
+
+    <section id="theory">
+        <h2>Theoretical Foundation</h2>
+        <p>ReinFlow is rooted in a general policy gradient theorem for discrete-time Markov processes, enabling exact likelihood computation even at minimal denoising steps. This ensures stable, efficient optimization, with unbiased gradients providing a robust mathematical backbone. PPO is merely one implementation—ReinFlow’s flexibility extends to various RL algorithms and flow solvers like Rectified Flows and Shortcut Policies.</p>
+    </section>
+
+    <section id="conclusion">
+        <h2>Conclusion</h2>
+        <p>ReinFlow transforms robotics learning by overcoming imitation learning’s bottlenecks, leveraging flow matching’s simplicity, and pioneering sim2real RL. With a 135.36% average reward increase in locomotion tasks and a 40.34% success rate boost in manipulation tasks, all while cutting computational costs, ReinFlow sets a new standard. Dive into the <a href="https://reinflow.github.io/">full paper</a> and join the future of robotic control.</p>
+    </section>
 </body>
 </html>
