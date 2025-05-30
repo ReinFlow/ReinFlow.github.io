@@ -182,12 +182,62 @@
             object-fit: contain;
         }
         img[alt="schematic"] {
-            width: 90%;
+            width: 80%;
             height: auto;
             display: block;
             margin: 0 auto;
             max-width: 800px;
         }
+        img[alt="Can Success Rate"] {
+            width: 90%;
+            height: 120pt;
+            display: block;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+        img[alt="Square Success Rate"] {
+            width: 90%;
+            height: 120pt;
+            display: block;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+        img[alt="Transport Success Rate"] {
+            width: 90%;
+            height: 120pt;
+            display: block;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+        img[alt="Diffusion RL Baselines in Ant-v0"] {
+            width: 90%;
+            height: 120pt;
+            display: block;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+        img[alt="Diffusion RL Baselines in Hopper-v2"] {
+            width: 90%;
+            height: 120pt;
+            display: block;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+        img[alt="Diffusion RL Baselines in Walker2d-v2"] {
+            width: 90%;
+            height: 120pt;
+            display: block;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+        img[alt="Diffusion RL Baselines in Walker2d-v2"] {
+            width: 90%;
+            height: 120pt;
+            display: block;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+
         .subfigure img,
         .subfigure-2 img {
             width: 100%;
@@ -214,6 +264,55 @@
         </div>
     </div>
 
+
+
+<section id="facts-about-reinflow">
+    <h2>Facts about ReinFlow</h2>
+    ReinFlow is a general online RL fine-tuning framework for diversee flow matching policies. It is...
+    <ul style="list-style: none; padding-left: 0; font-family: Arial, sans-serif; max-width: 800px;">
+        <li style="margin-bottom: 12px;">
+            <span style="font-size: 1.3em; margin-right: 8px;">🌐</span>
+            <strong>Purely Online:</strong> ReinFlow operates entirely online, enabling real-time interaction and adaptation to dynamic environments.
+        </li>
+        <li style="margin-bottom: 12px;">
+            <span style="font-size: 1.3em; margin-right: 8px;">🚀</span>
+            <strong>Inborn Exploration:</strong> ReinFlow avoids constraints from pre-trained policies, fostering flexible and innovative exploration.
+        </li>
+        <li style="margin-bottom: 12px;">
+            <span style="font-size: 1.3em; margin-right: 8px;">🛡️</span>
+            <strong>Stable:</strong> ReinFlow maintains reliable performance across diverse tasks and random seeds. 
+        </li>
+        <li style="margin-bottom: 12px;">
+            <span style="font-size: 1.3em; margin-right: 8px;">⚡</span>
+            <strong>One-Step or Few-Step Fine-Tuning:</strong> ReinFlow achieves effective fine-tuning with minimal denoising steps, 
+            prioritizing wall-time efficiency at fine-tuning and deployment.
+        </li>
+        <li style="margin-bottom: 12px;">
+            <span style="font-size: 1.3em; margin-right: 8px;">🔄</span>
+            <strong>Versatile:</strong> ReinFlow supports multiple flow model variants, such as Rectified Flow with various time distributions, 
+            and Shortcut Models.         
+        </li>
+        <li style="margin-bottom: 12px;">
+            <span style="font-size: 1.3em; margin-right: 8px;">📘</span>
+            <strong>Theoretically Grounded:</strong> ReinFlow’s gradient loss is derived from policy gradient theory for POMDPs, ensuring a solid theoretical foundation.
+        </li>
+        <li style="margin-bottom: 12px;">
+            <span style="font-size: 1.3em; margin-right: 8px;">🧠</span>
+            <strong>General Framework:</strong> The algorithm adapts to all pre-trained policies with an ODE path with diverse policy gradient methods.
+        </li>
+        <li style="margin-bottom: 12px;">
+            <span style="font-size: 1.3em; margin-right: 8px;">📂</span>
+            <strong>Reproduceable:</strong> We open-source all the training script, hyperparameters, pre-training data, model checkpoints, and training records under the MIT license. 
+        </li>
+    </ul>
+</section>
+
+
+
+
+
+
+
     <section id="experiments">
         <h2>Experiments</h2>
         <ul style="list-style: none; padding-left: 0; font-family: Arial, sans-serif; max-width: 800px;">
@@ -230,7 +329,7 @@
     </section>
 
     <section id="env-setup">
-        <h3>Environment and Data</h3>
+        <h3>1. Environment and Data</h3>
         <table style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
             <tr>
@@ -249,13 +348,13 @@
             </tr>
             <tr>
                 <td style="padding: 8px;">State</td>
-                <td style="padding: 8px;"><strong>Sparse</strong></td>
+                <td style="padding: 8px;">Sparse<strong></strong></td>
                 <td style="padding: 8px;">Franka Kitchen</td>
                 <td style="padding: 8px;">Human-teleoperated data from D4RL</td>
             </tr>
             <tr>
-                <td style="padding: 8px;"><strong>Visual</strong></td>
-                <td style="padding: 8px;"><strong>Sparse</strong></td>
+                <td style="padding: 8px;">Visual<strong></strong></td>
+                <td style="padding: 8px;">Sparse<strong></strong></td>
                 <td style="padding: 8px;">Robomimic</td>
                 <td style="padding: 8px;">Human-teleoperated data processed like DPPO's paper</td>
             </tr>
@@ -264,89 +363,121 @@
     </section>
 
     <section id="performance-evaluation">
-        <h3>Performance Evaluation</h3>
-        <p>ReinFlow consistently improves performance across all tasks, excelling in Gym and Franka Kitchen benchmarks.</p>
-        <div class="figure-container">
-            <div class="subfigure-row">
-                <div class="subfigure">
+        <h3>2. Performance Evaluation and Comparisons</h3>
+        <h4>2.1 Comparison with DPPO and FQL</h4>
+        <p class="indented-paragraph" style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
+            <span style="font-size: 1.3em; margin-right: 8px;">📈</span>
+            ReinFlow consistently enhances performance across Gym and Franka Kitchen benchmarks, boosting success rates by 40.09% in Robomimic tasks with fewer steps than DPPO.
+        </p>
+        <div class="figure-container" style="text-align: center;">
+            <div class="subfigure-row" style="justify-content: center; margin-left: 0; margin-right: 0;">
+                <div class="subfigure" style="max-width: 24%;">
                     <img src="figs/jpgs/gym-state_hopper-d4rl_AverageEpisodeReward_wallclock-page1.jpg" alt="Hopper-v2 Wall Time">
-                    <div class="subfigure-caption">(A) Hopper-v2</div>
+                    <div class="subfigure-caption" style="text-align: center;">(A) Hopper-v2</div>
                 </div>
-                <div class="subfigure">
+                <div class="subfigure" style="max-width: 24%;">
                     <img src="figs/jpgs/gym-state_walker-d4rl_AverageEpisodeReward_wallclock-page1.jpg" alt="Walker-v2 Wall Time">
-                    <div class="subfigure-caption">(B) Walker-v2</div>
+                    <div class="subfigure-caption" style="text-align: center;">(B) Walker-v2</div>
                 </div>
-                <div class="subfigure">
+                <div class="subfigure" style="max-width: 24%;">
                     <img src="figs/jpgs/gym-state_ant-d4rl_AverageEpisodeReward_wallclock-page1.jpg" alt="Ant-v2 Wall Time">
-                    <div class="subfigure-caption">(C) Ant-v2</div>
+                    <div class="subfigure-caption" style="text-align: center;">(C) Ant-v2</div>
                 </div>
-                <div class="subfigure">
+                <div class="subfigure" style="max-width: 24%;">
                     <img src="figs/jpgs/gym-state_humanoid-d4rl_AverageEpisodeReward_wallclock-page1.jpg" alt="Humanoid-v3 Wall Time">
-                    <div class="subfigure-caption">(D) Humanoid-v3</div>
+                    <div class="subfigure-caption" style="text-align: center;">(D) Humanoid-v3</div>
                 </div>
             </div>
-            <div class="figure-container legend">
+            <div class="figure-container legend" style="text-align: center;">
                 <img src="figs/jpgs/gym-state_hopper-d4rl_AverageEpisodeReward_legend_crop-page1.jpg" alt="Legend44">
             </div>
-            <div class="caption">
+            <div class="caption" style="text-align: center;">
                 Wall time efficiency results of state-based locomotion tasks in OpenAI Gym. Dashed lines indicate the behavior cloning level.
             </div>
         </div>
-        <div class="figure-container">
-            <div class="subfigure-row">
-                <div class="subfigure">
+        <div class="figure-container" style="text-align: center;">
+            <div class="subfigure-row" style="justify-content: center; margin-left: 0; margin-right: 0;">
+                <div class="subfigure" style="max-width: 24%;">
                     <img src="figs/jpgs/kitchen_kitchen-complete-v0_TaskCompletionRate_wallclock-page1.jpg" alt="Kitchen-complete Wall Time">
-                    <div class="subfigure-caption">(A) Kitchen-complete</div>
+                    <div class="subfigure-caption" style="text-align: center;">(A) Kitchen-complete</div>
                 </div>
-                <div class="subfigure">
+                <div class="subfigure" style="max-width: 24%;">
                     <img src="figs/jpgs/kitchen_kitchen-complete-v0_TaskCompletionRate-page1.jpg" alt="Kitchen-complete Sample">
-                    <div class="subfigure-caption">(B) Kitchen-complete</div>
+                    <div class="subfigure-caption" style="text-align: center;">(B) Kitchen-complete</div>
                 </div>
-                <div class="subfigure">
+                <div class="subfigure" style="max-width: 24%;">
                     <img src="figs/jpgs/kitchen_kitchen-mixed-v0_TaskCompletionRate-page1.jpg" alt="Kitchen-mixed Sample">
-                    <div class="subfigure-caption">(C) Kitchen-mixed</div>
+                    <div class="subfigure-caption" style="text-align: center;">(C) Kitchen-mixed</div>
                 </div>
-                <div class="subfigure">
+                <div class="subfigure" style="max-width: 24%;">
                     <img src="figs/jpgs/kitchen_kitchen-partial-v0_TaskCompletionRate-page1.jpg" alt="Kitchen-partial Sample">
-                    <div class="subfigure-caption">(D) Kitchen-partial</div>
+                    <div class="subfigure-caption" style="text-align: center;">(D) Kitchen-partial</div>
                 </div>
             </div>
-            <div class="figure-container legend">
+            <div class="figure-container legend" style="text-align: center;">
                 <img src="figs/jpgs/kitchen_kitchen-complete-v0_TaskCompletionRate_legend_crop-page1.jpg" alt="Legend3">
             </div>
-            <div class="caption">
+            <div class="caption" style="text-align: center;">
                 Task completion rates of state-input manipulation tasks in Franka Kitchen. (A) and (B) show the completion rates against the wall time and sample cost. We only show the sample cost plots for agents trained on mixed and partial datasets for brevity.
             </div>
         </div>
-        <p>In Robomimic tasks, ReinFlow boosts success rates by 40.09% with fewer steps and time than DPPO, using minimal denoising steps.</p>
-        <div class="figure-container">
-            <div class="subfigure-row">
-                <div class="subfigure-3">
+        <div class="figure-container" style="text-align: center;">
+            <div class="subfigure-row" style="justify-content: center; margin-left: 0; margin-right: 0;">
+                <div class="subfigure-3" style="max-width: 30%;">
                     <img src="figs/jpgs/robomimic-img_can-img_SuccessRate-page1.jpg" alt="Can Success Rate">
-                    <div class="subfigure-caption">(A) Can</div>
+                    <div class="subfigure-caption" style="text-align: center;">(A) Can</div>
                 </div>
-                <div class="subfigure-3">
+                <div class="subfigure-3" style="max-width: 30%;">
                     <img src="figs/jpgs/robomimic-img_square-img_SuccessRate-page1.jpg" alt="Square Success Rate">
-                    <div class="subfigure-caption">(B) Square</div>
+                    <div class="subfigure-caption" style="text-align: center;">(B) Square</div>
                 </div>
-                <div class="subfigure-3">
+                <div class="subfigure-3" style="max-width: 30%;">
                     <img src="figs/jpgs/robomimic-img_transport-img_SuccessRate-page1.jpg" alt="Transport Success Rate">
-                    <div class="subfigure-caption">(C) Transport</div>
+                    <div class="subfigure-caption" style="text-align: center;">(C) Transport</div>
                 </div>
             </div>
-            <div class="figure-container legend">
+            <div class="figure-container legend" style="text-align: center;">
                 <img src="figs/jpgs/robomimic-img_can-img_SuccessRate_legend_crop-page1.jpg" alt="Legend4">
             </div>
-            <div class="caption">
+            <div class="caption" style="text-align: center;">
                 Success rates in visual manipulation tasks in Robomimic.
+            </div>
+        </div>
+
+        <h4>2.2 Comparison with Other Diffusion RL Methods</h4>
+        <p class="indented-paragraph" style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
+            <span style="font-size: 1.3em; margin-right: 8px;">⚖️</span>
+            ReinFlow outperforms diffusion RL baselines in stability and asymptotic performance across continuous control tasks like Ant-v0, Hopper-v2, and Walker2d-v2.
+        </p>
+        <p class="indented-paragraph" style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0;">
+            <span style="font-size: 1.3em; margin-right: 8px;">📊</span>
+            Using consistent hyperparameters from prior work, ReinFlow demonstrates superior performance, as shown in Fig. 5(A-C).
+        </p>
+        <div class="figure-container" style="text-align: center;">
+            <div class="subfigure-row" style="justify-content: center; margin-left: 0; margin-right: 0;">
+                <div class="subfigure-3" style="max-width: 30%;">
+                    <img src="figs/jpgs/all_diffusion_baselines_ant-page1.jpg" alt="Diffusion RL Baselines in Ant-v0">
+                    <div class="subfigure-caption" style="text-align: center;">(A) Ant-v0</div>
+                </div>
+                <div class="subfigure-3" style="max-width: 30%;">
+                    <img src="figs/jpgs/all_diffusion_baselines_hopper-page1.jpg" alt="Diffusion RL Baselines in Hopper-v2">
+                    <div class="subfigure-caption" style="text-align: center;">(B) Hopper-v2</div>
+                </div>
+                <div class="subfigure-3" style="max-width: 30%;">
+                    <img src="figs/jpgs/all_diffusion_baselines_walker-page1.jpg" alt="Diffusion RL Baselines in Walker2d-v2">
+                    <div class="subfigure-caption" style="text-align: center;">(C) Walker2d-v2</div>
+                </div>
+            </div>
+            <div class="caption" style="text-align: center;">
+                Fine-tuning locomotion tasks Ant-v0, Hopper-v2, and Walker2d-v2 with Diffusion RL baselines and ReinFlow.
             </div>
         </div>
     </section>
 
     <section id="design-choice">
-        <h3>The Design Choice and Key Factors Affecting ReinFlow</h3>
+        <h3>3. The Design Choice and Key Factors Affecting ReinFlow</h3>
         <p>We examine how pre-trained models, denoising steps, noise levels, and regularization impact ReinFlow.</p>
-        <h4>RL Provides Another Scaling Dimension</h4>
+        <h4>3.1 RL Provides Another Scaling Dimension</h4>
         <p class="indented-paragraph" style="font-family: Arial, sans-serif; max-width: 800px; line-height: 1.4;">
             <span style="font-size: 1.2em; margin-right: 6px;">➖ </span>
             Scaling data or inference steps: quickly plateaus.<br>
@@ -374,12 +505,12 @@
                 RL provides another way of scaling apart from increasing pre-training data and inference consumption, which has a plateauing effect. The improvement is invariant of flow policy’s time distribution and is achievable at four steps in Hopper (A) and one step in Square (B, C).
             </div>
         </div>
-        <h4>Flow Matching's Time Distribution</h4>
+        <h4>3.2 Flow Matching's Time Distribution</h4>
         <p>ReinFlow's performance is robust to changes in time sampling. </p>
         <p class="indented-paragraph">✅ Uniform </p>
         <p class="indented-paragraph">✅ Logit-normal </p>
         <p class="indented-paragraph">✅ Beta (slightly better for single-step fine-tuning.)</p>
-        <h4>Noise Network Inputs</h4>
+        <h4>3.3 Noise Network Inputs</h4>
         <p class="indented-paragraph" style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
             <span style="font-size: 1.3em; margin-right: 8px;" aria-hidden="true">😊</span>
             Conditioning noise on state alone works well.
@@ -403,7 +534,7 @@
                 Conditioning on state and time yields a higher success rate than only conditioning on states.
             </div>
         </div>
-        <h4>Noise Level and Exploration</h4>
+        <h4>3.4 Noise Level and Exploration</h4>
         <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
             <span style="font-size: 1.3em; margin-right: 8px;">⚖️</span>
             Noise magnitude affects exploration: too little traps the policy, too much hurts execution.
@@ -416,7 +547,7 @@
             <span style="font-size: 1.3em; margin-right: 8px;">🔒</span>
             Policies become less sensitive to noise once in the correct region.
         </p>
-        <h4>Regularization and Exploration</h4>
+        <h4>3.5 Regularization and Exploration</h4>
         <p style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
             <span style="font-size: 1.3em; margin-right: 8px;">🏅</span>
             Entropy regularization promotes exploration, while behavior cloning regularization can trap the policy and is unnecessary.
@@ -440,6 +571,28 @@
                 Noise level and regularization's effect. (A) demonstrates constant noise with different standard deviation affects ReinFlow's exploration. (B) shows how entropy regularization with coefficient $\alpha$ and $W_2$ regularization with different coefficients $\beta$ influences ReinFlow.
             </div>
         </div>
+        <h4>3.6 The Number of Denoising Steps</h4>
+            <p class="indented-paragraph" style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0 0 12px 0;">
+                <span style="font-size: 1.3em; margin-right: 8px;">📈</span>
+                Increasing the number of denoising steps $K$ in ReinFlow boosts initial rewards in Franka Kitchen’s Shortcut Policy but results in rapid reward plateaus, as shown in Fig. 4(A).
+            </p>
+            <p class="indented-paragraph" style="text-indent: 30px; font-family: Arial, sans-serif; line-height: 1.6; margin: 0;">
+                <span style="font-size: 1.3em; margin-right: 8px;">🎯</span>
+                In visual manipulation tasks, lowering noise standard deviation with higher $K$ improves performance for pre-trained policies with low success rates.
+            </p>
+            <div class="figure-container" style="text-align: center;">
+                <div class="subfigure-row" style="justify-content: center; margin-left: 0; margin-right: 0;">
+                    <div class="subfigure-2" style="max-width: 80%;">
+                        <img src="figs/jpgs/kitchen_kitchen-complete-v0-denoise_step_TaskCompletionRate-page1.jpg" alt="Denoising Steps in Kitchen-complete">
+                        <div class="subfigure-caption" style="text-align: center;">(A) Denoising Steps in Kitchen-complete</div>
+                    </div>
+                </div>
+                <div class="caption" style="text-align: center;">
+                    Fine-tuning Shortcut Policy in Kitchen-complete-v0 at denoising steps $K=1,2,4$, averaged over three seeds (0, 42, 3407).
+                </div>
+            </div>
+        </section>
+        </section>
     </section>
 </body>
 </html>
