@@ -49,7 +49,7 @@
 <body>
     <h1>ReinFlow: Fine-tuning Flow Matching Policy with Online Reinforcement Learning</h1>
     <div class="figure-container">
-        <img src="ReinFlow.jpg" alt="Fine-tuning Flow Matching Policy with Online Reinforcement Learning Algorithm ReinFlow">
+        <img src="figs/ReinFlow.jpg" alt="Fine-tuning Flow Matching Policy with Online Reinforcement Learning Algorithm ReinFlow">
         <div class="caption">
             <p>Fine-tuning Flow Matching Policy with Online Reinforcement Learning Algorithm ReinFlow. Through interactions with the environment, the robot collects visual and proprioceptive signals, from which a pre-trained policy extracts features and outputs the next action's velocity field $v_\theta$. 
             A noise injection network $\sigma_{\theta^\prime}$ shares the extracted features with $v_\theta$ and outputs a Gaussian noise that smoothens the flow's deterministic ODE path, converting flows to a discrete-time Markov process with Gaussian transition probabilities. 
