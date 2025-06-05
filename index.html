@@ -383,7 +383,61 @@
     </ul>
 </section>
 
-    <section id="experiments">
+<section id="how-reinflow-works">
+    <h2>How ReinFlow Works</h2>
+    <ul style="list-style: none; padding-left: 0; font-family: Arial, sans-serif; max-width: 800px;">
+        <li style="margin-bottom: 12px;">
+            <strong>Noise Injection:</strong> ReinFlow trains a neural network to inject noise into the diffusion process that leads to action generation.
+        </li>
+        <li style="margin-bottom: 12px;">
+            <strong>Noise Conditioning:</strong> With noise conditioning on time and action, it recovers diffusion terms for the flow matching ODE.
+        </li>
+        <li style="margin-bottom: 12px;">
+            <strong>Conversion:</strong> This converts the pre-trained flow ODE to a non-linear stochastic differential equation for enhanced generation diversity, and thus more exploration.
+            <p style="text-align: center;">\[
+            \begin{align}
+                \text{SDE in its general form:}\ \ dX_t &= f(X_t, t) \, dt + \sigma(X_t, t) \, dW_t \\
+                \text{ReinFlow's noise injection:}\ \ a^{k+1} &\leftarrow a^k + v_\theta(t_k, a^k, o) \Delta t_k + \sigma_{\theta'}(t_k, a^k, o) \sqrt{\Delta t_k} \epsilon, \quad \epsilon \sim \mathcal{N}(0, \mathbb{I}_{d_A})
+            \end{align}
+            \]</p>
+<table style="width: 100%; border-collapse: collapse; margin-top: 10px; text-align: center;">
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <th style="padding: 8px;">General SDE</th>
+                    <th style="padding: 8px;">ReinFlow Update Rule</th>
+                    <th style="padding: 8px;">Description</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px;">\[ dX_t \]</td>
+                    <td style="padding: 8px;">\[ a^{k+1} \]</td>
+                    <td style="padding: 8px;">\( X_t \) is the random variable at time \( t \), corresponding to action \( a_t \) in ReinFlow.</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px;">\[ f(X_t, t) \, dt \]</td>
+                    <td style="padding: 8px;">\[ v_\theta(t_k, a^k, o) \Delta t_k \]</td>
+                    <td style="padding: 8px;">\( f(X_t, t) \) is the drift term (deterministic component), analogous to the pre-trained flow’s velocity network \( v_\theta \).</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px;">\[ \sigma(X_t, t) \]</td>
+                    <td style="padding: 8px;">\[ \sigma_{\theta'}(t_k, a^k, o) \]</td>
+                    <td style="padding: 8px;">\( \sigma(X_t, t) \) is the diffusion term (random component), which ReinFlow learns as \( \sigma_{\theta'} \).</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px;">\[ dW_t \]</td>
+                    <td style="padding: 8px;">\[ \sqrt{\Delta t_k} \epsilon^{\ *} \]</td>
+                    <td style="padding: 8px;">\( W_t \) is a Wiener process (Brownian motion), discretized to Gaussian noise \( \sqrt{\Delta t_k} \epsilon \).</td>
+                </tr>
+            </table>
+            <p style="font-size: 0.9em; margin-top: 8px;"><sup>*</sup> Note: The \( \sqrt{\Delta t_k} \) term is omitted when using uniform discretization, as it is equivalent to scaling \( \sigma_{\theta'} \)'s output.</p>        </li>
+        <li style="margin-bottom: 12px;">
+            <strong>Parameter Efficiency:</strong> The noise network shares features with the velocity head, increasing success rate at the minimum cost of parameter increase during fine-tuning. 
+        </li>
+        <li style="margin-bottom: 12px;">
+            <strong>After Fine-Tuning:</strong> The noise network is discarded, and the fine-tuned model uses ODE inference for fast generation.
+        </li>
+    </ul>
+</section>
+
+<section id="experiments">
         <h2>Experiments</h2>
         <ul style="list-style: none; padding-left: 0; font-family: Arial, sans-serif; max-width: 800px;">
             <li style="margin-bottom: 12px;">
