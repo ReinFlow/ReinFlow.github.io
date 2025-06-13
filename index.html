@@ -292,58 +292,24 @@
         justify-content: center;">
         <span style="font-size: 18px; margin-right: 10px;">📄</span> Docs
     </a>
-
-
-  <!-- <a href="https://arxiv.org/abs/2505.22094" 
-     style="background-color: #000; color: white; 
-     padding: 8px 16px; 
-     border-radius: 20px; 
-     text-decoration: none; 
-     font-family: Arial, sans-serif; 
-     display: inline-flex; 
-     align-items: center; 
-     justify-content: center;">
-    <span style="font-size: 18px; margin-right: 10px;">📄</span> Paper
-  </a> -->
-
-  <!-- <a href="#" 
-     style="background-color: #000; color: white; 
-     padding: 8px 16px; 
-     border-radius: 20px; 
-     text-decoration: none; 
-     font-family: Arial, sans-serif; 
-     display: inline-flex; 
-     align-items: center; 
-     justify-content: center;">
-    <span style="font-size: 18px; margin-right: 10px;">🤗</span> Data
-  </a> -->
-</div>
-
-<div class="figure-container">
-        <img src="figs/jpgs/ReinFlow.jpg" alt="schematic">
-        <div class="caption">
-            <!-- <p>Fine-tuning Flow Matching Policy with ReinFlow. 
-            Through interactions with the environment, the robot collects visual and proprioceptive signals, 
-            from which a pre-trained policy extracts features and outputs the next action's velocity field $v_\theta$. 
-            A noise injection network $\sigma_{\theta^\prime}$ shares the extracted features with $v_\theta$ and outputs a Gaussian noise that smoothens the flow's deterministic ODE path, converting flows to a discrete-time Markov process with Gaussian transition probabilities. 
-            The noise injection yields a simple and exact likelihood expression at any denoising steps, which is friendly for policy gradient optimization. 
-            The noise injection net $\sigma_{\theta^\prime}$, surrounded by the dot lines, is co-trained with $v_\theta$ but will be discarded after fine-tuning.</p> -->
-            <ul>
-            <p>Fine-tuning flow matching policy with ReinFlow involves these steps:</p>
-            <!-- <ul> -->
-            <li><b>1. Rollout</b>: The robot interacts with the environment online and gathers visual and proprioceptive observation. </li>
-            <li><b>2. Extract Features</b>: A pre-trained policy backbone extracts visuomotor features and feeds them to the velocity field $v_\theta$, which guides the next action's changes.</li>
-            <li><b>3. Add Noise</b>: The network $\sigma_{\theta^\prime}$ shares extracted features with the velocity net and outputs Gaussian noise to smooth the ODE path for likelihood evaluation. </li>
-            <li><b>4. Co-train and Discard</b>: The network $\sigma_{\theta^\prime}$ co-trains with $v_\theta$ only during fine-tuning and is discarded afterward.</li>
-            <!-- </ul>          -->
-            </ul>
-        </div>
 </div>
 
 
+    <div class="figure-container">
+            <img src="figs/jpgs/ReinFlow.jpg" alt="schematic">
+            <div class="caption">
+                <ul>
+                <p>Fine-tuning flow matching policy with ReinFlow involves these steps:</p>
+                <li><b>1. Rollout</b>: The robot interacts with the environment online and gathers visual and proprioceptive observation. </li>
+                <li><b>2. Extract Features</b>: A pre-trained policy backbone extracts visuomotor features and feeds them to the velocity field $v_\theta$, which guides the next action's changes.</li>
+                <li><b>3. Add Noise</b>: The network $\sigma_{\theta^\prime}$ shares extracted features with the velocity net and outputs Gaussian noise to smooth the ODE path for likelihood evaluation. </li>
+                <li><b>4. Co-train and Discard</b>: The network $\sigma_{\theta^\prime}$ co-trains with $v_\theta$ only during fine-tuning and is discarded afterward.</li>
+                </ul>
+            </div>
+    </div>
 
 <section id="facts-about-reinflow">
-    <h2>Facts about ReinFlow</h2>
+    <h2>What is ReinFlow?</h2>
     ReinFlow is a general online RL fine-tuning framework for diversee flow matching policies. It is...
     <ul style="list-style: none; padding-left: 0; font-family: Arial, sans-serif; max-width: 800px;">
         <li style="margin-bottom: 12px;">
@@ -383,53 +349,101 @@
     </ul>
 </section>
 
+
+
 <section id="how-reinflow-works">
     <h2>How ReinFlow Works</h2>
     <ul style="list-style: none; padding-left: 0; font-family: Arial, sans-serif; max-width: 800px;">
         <li style="margin-bottom: 12px;">
-            <strong>Noise Injection:</strong> ReinFlow trains a neural network to inject noise into the diffusion process that leads to action generation.
+            <strong>Routine</strong>
+            <ul style="list-style: disc; padding-left: 20px;">
+                <li>
+    Fine-tuning flow matching policy with ReinFlow involves these steps: rollout, extract features, add noise, discard noise.
+    <details>
+        <summary style="cursor: pointer; color: blue; text-decoration: underline;">
+            Click here to see the whole algorithm pseudocode.
+        </summary>
+        <div class="algorithm" id="alg-ReinFlow" style="margin-top: 1em;">
+            <div class="caption">Algorithm 1: ReinFlow</div>
+            <ol>
+                <li>
+                    Input: pre-trained flow matching policy's velocity field \(v_\theta\); denoising step number \(K\), discount factor \(\gamma\), batch size \(B\), discretization scheme \(0 = t_0 < t_1 < \ldots < t_K = 1\) with \(\Delta t_k := t_{k+1} - t_k\), regularization function \(\mathcal{R}\) with intensity \(\alpha \in \mathbb{R}\).
+                </li>
+                <li>
+                    Initialize: noise injection network \(\theta'\).
+                </li>
+                <li>
+                    While not converged:
+                    <ol>
+                        <li>Restore last iteration's parameters: \(\bar{\theta}_{\mathrm{old}} \leftarrow \mathrm{stop\_grad}([\theta, \theta'])\).</li>
+                        <li>Reset environment and receive initial observation \(o\).</li>
+                        <li>
+                            While not done:
+                            <span class="comment">Rollout policy \(\pi\).</span>
+                            <ol>
+                                <li>Sample \(a^0 \sim \mathcal{N}(0, \mathbb{I}_{d_A})\).</li>
+                                <li>
+                                    For denoising step \(k \in \{0, 1, \ldots, K-1\}\):
+                                    <span class="comment">Inject noise and integrate.</span>
+                                    <ol>
+                                        <li>
+                                            \(a^{k+1} \leftarrow a^k + v_\theta(t_k, a^k, o) \Delta t_k + \sigma_{\theta'}(t_k, a^k, o) \epsilon\), where \(\epsilon \sim \mathcal{N}(0, \mathbb{I}_{d_A})\).
+                                        </li>
+                                    </ol>
+                                </li>
+                                <li>Record denoised actions \(a^0, a^1, \ldots, a^K\) in a buffer.</li>
+                                <li>Play action \(a = a^K\), receive reward \(r\) and done flag \(d\), update observation \(o\).</li>
+                                <li>Store \(\{\mathbf{a}, o, r, d\}\) to buffer, where \(\mathbf{a} := (a^0, a^1, \ldots, a^K)\).</li>
+                            </ol>
+                        </li>
+                        <li>Sample a batch \(\{\mathbf{a}_i, o_i, r_i, d_i\}_{i=1}^B\) from buffer. <span class="comment">Policy Optimization</span></li>
+                        <li>
+                            Compute the policy's transition probability for each denoising step \(k\) and tuple \((\mathbf{a}_i, o_i, r_i, d_i)\):
+                            <div>
+                                \[
+                                \ln \pi^{\bar{\theta}}(a_i^{k+1} | a_i^k, o_i) = \ln \mathcal{N}\left(a_i^{k+1} \mid a_i^k + v_\theta(t_k, a_i^k, o_i) \Delta t_k, \sigma_{\theta'}^2(t_k, a_i^k, o_i)\right)
+                                \]
+                            </div>
+                        </li>
+                        <li>Compute the regularization function \(\mathcal{R}(\mathbf{a}_i, o_i; \bar{\theta}, \bar{\theta}_{\mathrm{old}})\).</li>
+                        <li>
+                            Call a policy gradient sub-routine to jointly optimize \(\theta\) and \(\theta'\) by minimizing the loss:
+                            <div>
+                                \[
+                                \begin{aligned}
+                                \theta, \theta' = \underset{\theta, \theta'}{\mathrm{argmin}} \frac{1}{B} \sum_{i=1}^B \Big[ & -A^{\bar{\theta}_{\mathrm{old}}}(o_i, a_i) \sum_{k=0}^{K-1} \ln \pi^{\bar{\theta}}(a_i^{k+1} | a_i^k, o_i) + \alpha \cdot \mathcal{R}(\mathbf{a}_i, o_i; \bar{\theta}, \bar{\theta}_{\mathrm{old}}) \Big]
+                                \end{aligned}
+                                \]
+                            </div>
+                            where \(\bar{\theta} := [\theta, \theta']\).
+                        </li>
+                    </ol>
+                </li>
+                <li>Return: fine-tuned flow matching policy's velocity field \(v_\theta\).</li>
+            </ol>
+        </div>
+    </details>
+</li>
+
+            </ul>
+            <strong>Structure of the Noise:</strong>
+            <ul style="list-style: disc; padding-left: 20px;">
+                <li><strong>Zero-mean:</strong> The noise injected is a magnitude-modulated centered Gaussian noise, matching the dimensions of the actions.</li>
+                <li><strong>Bounded:</strong> 
+                    <ul style="list-style: circle; padding-left: 20px;">
+                        <li>Bounded noise is adopted to avoid exceeding physical constraints (too large) or limiting exploration (too small).</li>
+                        <li>Implementation: Noise net output is squeezed through a tanh function, then scaled and shifted to a desired region.</li>
+                        <li>Upper and lower bounds are hyperparameters relevant to the robot embodiment.</li>
+                        <li>During fine-tuning, the noise net searches within these bounds and naturally decays as the policy converges to a high success rate.</li>
+                        <li>Entropy regularization may increase noise to promote exploration.</li>
+                    </ul>
+                </li>
+                <li><strong>Learnable:</strong> Conditioning noise on denoising time, denoised action, and observation improves performance, with minimal parameter increase during fine-tuning (compared to constant noise).</li>
+                <li><strong>Markovian:</strong> Noise depends only on the current denoised action, not previous ones, ensuring the joint probability expands into the sum of transition probabilities.</li>
+            </ul>
         </li>
         <li style="margin-bottom: 12px;">
-            <strong>Noise Conditioning:</strong> With noise conditioning on time and action, it recovers diffusion terms for the flow matching ODE.
-        </li>
-        <li style="margin-bottom: 12px;">
-            <strong>Conversion:</strong> This converts the pre-trained flow ODE to a non-linear stochastic differential equation for enhanced generation diversity, and thus more exploration.
-            <p style="text-align: center;">\[
-            \begin{align}
-                \text{SDE in its general form:}\ \ dX_t &= f(X_t, t) \, dt + \sigma(X_t, t) \, dW_t \\
-                \text{ReinFlow's noise injection:}\ \ a^{k+1} &\leftarrow a^k + v_\theta(t_k, a^k, o) \Delta t_k + \sigma_{\theta'}(t_k, a^k, o) \sqrt{\Delta t_k} \epsilon, \quad \epsilon \sim \mathcal{N}(0, \mathbb{I}_{d_A})
-            \end{align}
-            \]</p>
-<table style="width: 100%; border-collapse: collapse; margin-top: 10px; text-align: center;">
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <th style="padding: 8px;">General SDE</th>
-                    <th style="padding: 8px;">ReinFlow Update Rule</th>
-                    <th style="padding: 8px;">Description</th>
-                </tr>
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding: 8px;">\[ dX_t \]</td>
-                    <td style="padding: 8px;">\[ a^{k+1}-a^{k} \]</td>
-                    <td style="padding: 8px;">\( X_t \) is the random variable at time \( t \), corresponding to action \( a_t \) in ReinFlow.</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding: 8px;">\[ f(X_t, t) \, dt \]</td>
-                    <td style="padding: 8px;">\[ v_\theta(t_k, a^k, o) \Delta t_k \]</td>
-                    <td style="padding: 8px;">\( f(X_t, t) \) is the drift term (deterministic component), analogous to the pre-trained flow’s velocity network \( v_\theta \).</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding: 8px;">\[ \sigma(X_t, t) \]</td>
-                    <td style="padding: 8px;">\[ \sigma_{\theta'}(t_k, a^k, o) \]</td>
-                    <td style="padding: 8px;">\( \sigma(X_t, t) \) is the diffusion term (random component), which ReinFlow learns as \( \sigma_{\theta'} \).</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding: 8px;">\[ dW_t \]</td>
-                    <td style="padding: 8px;">\[ \sqrt{\Delta t_k} \epsilon^{\ *} \]</td>
-                    <td style="padding: 8px;">\( W_t \) is a Wiener process (Brownian motion), discretized to Gaussian noise \( \sqrt{\Delta t_k} \epsilon \).</td>
-                </tr>
-            </table>
-            <p style="font-size: 0.9em; margin-top: 8px;"><sup>*</sup> Note: The \( \sqrt{\Delta t_k} \) term is omitted when using uniform discretization, as it is equivalent to scaling \( \sigma_{\theta'} \)'s output.</p>        </li>
-        <li style="margin-bottom: 12px;">
-            <strong>Parameter Efficiency:</strong> The noise network shares features with the velocity head, increasing success rate at the minimum cost of parameter increase during fine-tuning. 
+            <strong>Parameter Efficiency:</strong> The noise network shares features with the velocity head, increasing success rate with minimal parameter increase during fine-tuning.
         </li>
         <li style="margin-bottom: 12px;">
             <strong>After Fine-Tuning:</strong> The noise network is discarded, and the fine-tuned model uses ODE inference for fast generation.
@@ -437,8 +451,13 @@
     </ul>
 </section>
 
+
+
+
+
+
 <section id="experiments">
-        <h2>Experiments</h2>
+    <h2>Experiments</h2>
         <ul style="list-style: none; padding-left: 0; font-family: Arial, sans-serif; max-width: 800px;">
             <li style="margin-bottom: 12px;">
                 🎯 <strong>Goal:</strong> Increase success rate for pre-trained flow policies at minimal denoising steps
@@ -451,43 +470,6 @@
             </li>
         </ul>
     </section>
-
-    <!-- <section id="env-setup">
-        <h3>1. Environment and Data</h3>
-        <table style="width: 100%; border-collapse: collapse; text-align: left;">
-            <thead>
-            <tr>
-                <th style="border-bottom: 2px solid #333; padding: 8px;">Input Type</th>
-                <th style="border-bottom: 2px solid #333; padding: 8px;">Reward Type</th>
-                <th style="border-bottom: 2px solid #333; padding: 8px;">Environment</th>
-                <th style="border-bottom: 2px solid #333; padding: 8px;">Data Source</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td style="padding: 8px;">State</td>
-                <td style="padding: 8px;">Dense</td>
-                <td style="padding: 8px;">OpenAI Gym</td>
-                <td style="padding: 8px;">D4RL data</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px;">State</td>
-                <td style="padding: 8px;">Sparse<strong></strong></td>
-                <td style="padding: 8px;">Franka Kitchen</td>
-                <td style="padding: 8px;">Human-teleoperated data from D4RL</td>
-            </tr>
-            <tr>
-                <td style="padding: 8px;">Visual<strong></strong></td>
-                <td style="padding: 8px;">Sparse<strong></strong></td>
-                <td style="padding: 8px;">Robomimic</td>
-                <td style="padding: 8px;">Human-teleoperated data processed like DPPO's paper</td>
-            </tr>
-            </tbody>
-        </table>
-    </section> -->
-
-
-
     <section id="env-setup">
     <h3>1. Environment and Data</h3>
     <table style="width: 100%; border-collapse: collapse; text-align: left;">
@@ -599,9 +581,6 @@
         }
     </script>
     </section>
-
-
-
 
     <section id="performance-evaluation">
         <h3>2. Performance Evaluation and Comparisons</h3>
@@ -835,5 +814,122 @@
         </section>
         </section>
     </section>
+
+
+    
+<section id="common-questions-reinflow">
+    <h2>Common Questions about ReinFlow</h2>
+    <ul style="list-style: none; padding-left: 0; font-family: Arial, sans-serif; max-width: 800px;">
+        <li style="margin-bottom: 12px;">
+            <strong>In which space is the noise added, and what does it mean physically?</strong>
+            <ul style="list-style: disc; padding-left: 20px;">
+                <li>Noise is added in the virtual denoising process, not directly to the final (real) action.</li>
+                <!-- <li>The noise matches the shape of joint torques.</li> -->
+                <li>Noise injection equates to slightly adjusting joint angles during action generation.</li>
+                <li>Noises ultimately influence the real action deployed in the environment.</li>
+            </ul>
+        </li>
+        <li style="margin-bottom: 12px;">
+            <p><strong>Flow models have an exact probability expression, 
+                why not use it directly?</strong></p>
+            <ul style="list-style: disc; padding-left: 20px; font-family: Arial, sans-serif; max-width: 800px;">
+        <li>Flow models' exact solution, 
+            \[
+            \ln p_1(\psi_1(x)) = \ln p_0(\psi_0(x)) - \int_0^1 \nabla \cdot v(t, \psi_t(x)) \, \mathrm{d}t, \quad x \sim p_0(\cdot),
+            \]
+            requires approximation in practice:
+            \[
+            \widehat{\ln p_1}(x_1) = \ln p_0(x_0) - \sum_{k=0}^{K-1} \mathrm{tr}\left[Z^\top \partial_X v_\theta(t_i, X_{t_i}) Z\right] \Delta t_i,
+            \]
+            where \( Z \sim p_Z(\cdot) \), \( \mathbb{E}[Z] = 0 \), \( \mathrm{Cov}[Z] = \mathbb{I}_{d\times d} \). This introduces Monte-Carlo noise and simulation errors.</li>
+        <li>ReinFlow directly treats the inference as a discrete-time process, avoiding discretization errors and working with very few steps.</li>
+        <li>ReinFlow adds bounded Gaussian noise, so the 
+            statistics of denoised actions is simple to compute and fully known, 
+            eliminating the Monte-Carlo errors in trace estimate. </li>
+    </ul>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left;">
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px; font-style: italic;">Aspect</td>
+                    <td style="padding: 8px; font-style: italic;">Naïve Approach (no noise injection)</td>
+                    <td style="padding: 8px; font-style: italic;">ReinFlow</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px;">Noise Type</td>
+                    <td style="padding: 8px;">Directly compute log probability</td>
+                    <td style="padding: 8px;">Inject learnable noise</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px;">Error</td>
+                    <td style="padding: 8px;">Unknown Monte-Carlo and discretization error</td>
+                    <td style="padding: 8px;">Controllable and fully known Gaussian noise</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px;">Accuracy</td>
+                    <td style="padding: 8px;">Inaccurate at few steps</td>
+                    <td style="padding: 8px;">No discretization concerns, accurate for 4, 2, or 1 steps</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px;">Computation</td>
+                    <td style="padding: 8px;">Compute-intensive in multiple steps</td>
+                    <td style="padding: 8px;">Fast closed-form solution</td>
+                </tr>
+            </table>
+        </li>
+        <li style="margin-bottom: 12px;">
+            <strong>Why add structured noise?</strong>
+            <ul style="list-style: disc; padding-left: 20px;">
+                <li>Smooths the ODE for a simple and exact likelihood expression, vital for reinforcement learning (RL).</li>
+                <li>Enables controllable exploration during fine-tuning through pre-defined and adjustable bounds, as well as regularization.</li>
+            </ul>
+        </li>
+        <li style="margin-bottom: 12px;">
+            <strong>What is the relationship between 
+                ReinFlow and ODE-SDE conversion?</strong> 
+            ReinFlow augments the pre-trained flow ODE to a non-linear stochastic differential equation for enhanced generation diversity and exploration.
+            <p style="text-align: center;">\[
+            \begin{align}
+                \text{SDE in its general form:}\ \ \mathrm{d}X_t &= f(X_t, t) \ \mathrm{d}t + \sigma(X_t, t) \, \mathrm{d}W_t \\
+                \text{ReinFlow's update:}\ \ a^{k+1} - a^k &=v_\theta(t_k, a^k, o) \Delta t_k + \sigma_{\theta'}(t_k, a^k, o) \sqrt{\Delta t_k} \, \epsilon, \quad \epsilon \sim \mathcal{N}(0, \mathbb{I}_{d_A})
+            \end{align}
+            \]</p>
+            <!-- <table style="width: 100%; border-collapse: collapse; margin-top: 10px; text-align: center;">
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <th style="padding: 8px;">General SDE</th>
+                    <th style="padding: 8px;">ReinFlow Update Rule</th>
+                    <th style="padding: 8px;">Description</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px;">\[ \mathrm{d}X_t \]</td>
+                    <td style="padding: 8px;">\[ a^{k+1}-a^{k} \]</td>
+                    <td style="padding: 8px;">\( X_t \) is the random variable at time \( t \), corresponding to action \( a_t \) in ReinFlow.</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px;">\[ f(X_t, t) \, \mathrm{d}t \]</td>
+                    <td style="padding: 8px;">\[ v_\theta(t_k, a^k, o) \Delta t_k \]</td>
+                    <td style="padding: 8px;">\( f(X_t, t) \) is the drift term (deterministic component), analogous to the pre-trained flow’s velocity network \( v_\theta \).</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px;">\[ \sigma(X_t, t) \]</td>
+                    <td style="padding: 8px;">\[ \sigma_{\theta'}(t_k, a^k, o) \]</td>
+                    <td style="padding: 8px;">\( \sigma(X_t, t) \) is the diffusion term (random component), which ReinFlow learns as \( \sigma_{\theta'} \).</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 8px;">\[ \mathrm{d}W_t \]</td>
+                    <td style="padding: 8px;">\[ \sqrt{\Delta t_k} \epsilon^{\ *} \]</td>
+                    <td style="padding: 8px;">\( W_t \) is a Wiener process (Brownian motion), discretized to Gaussian noise \( \sqrt{\Delta t_k} \epsilon \).</td>
+                </tr>
+            </table> -->
+            <p style="font-size: 0.9em; margin-top: 8px;"><sup>*</sup> Note: The \( \sqrt{\Delta t_k} \) term is omitted when using uniform discretization, as it is equivalent to scaling \( \sigma_{\theta'} \)'s output.</p>
+        </li>
+        <li style="margin-bottom: 12px;">
+            <strong>How does ReinFlow differ from diffusion?</strong>
+            <ul style="list-style: disc; padding-left: 20px;">
+                <li>Retains a deterministic component.</li>
+                <li>Noise is introduced only during fine-tuning, recovers an ODE after fine-tuning.</li>
+            </ul>
+        </li>
+    </ul>
+</section>
+
 </body>
 </html>
