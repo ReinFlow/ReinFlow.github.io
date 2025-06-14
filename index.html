@@ -393,7 +393,7 @@
         </summary> -->
         <div class="algorithm" id="alg-ReinFlow">
             <div class="caption">ReinFlow</div>
-            <div class="line-numbered"><span class="line-number">1</span><span class="line-content">Input: pre-trained flow's velocity \(v_\theta\); denoising step \(K\), discount \(\gamma\), batch size \(B\), discretization scheme \(0 = t_0 < t_1 < \ldots < t_K = 1\) with \(\Delta t_k := t_{k+1} - t_k\), regularizor \(\mathcal{R}\) with intensity \(\alpha \in \mathbb{R}\).</span></div>
+            <div class="line-numbered"><span class="line-number">1</span><span class="line-content"><b>Input:</b> pre-trained flow's velocity \(v_\theta\), denoising step \(K\), discount \(\gamma\), batch size \(B\), discretization scheme \(0 = t_0 < t_1 < \ldots < t_K = 1\) with \(\Delta t_k := t_{k+1} - t_k\), regularizor \(\mathcal{R}\) with intensity \(\alpha \in \mathbb{R}\).</span></div>
             <div class="line-numbered"><span class="line-number">2</span><span class="line-content">While not converged:</span></div>
             <div class="line-numbered"><span class="line-number">3</span><span class="line-content indent-1">Restore \(\bar{\theta}_{\mathrm{old}} \leftarrow \mathrm{stop\_grad}([\theta, \theta'])\).</span></div>
             <div class="line-numbered"><span class="line-number">4</span><span class="line-content indent-1">Reset env, receive observation \(o\).</span></div>
@@ -409,7 +409,7 @@
             <div class="line-numbered"><span class="line-number">14</span><span class="line-content indent-1">Estimate advantage \(A^{\bar{\theta}_{\mathrm{old}}}\) by a sub-routine and 
                 jointly optimize \(\theta\) and \(\theta'\) by</span></div>
             <div class="line-numbered"><span class="line-number">15</span><span class="line-content indent-1"><div class="math">\[\begin{aligned}\theta, \theta' = \underset{\theta, \theta'}{\mathrm{argmin}} \frac{1}{B} \sum_{i=1}^B \Big[ & -A^{\bar{\theta}_{\mathrm{old}}}(o_i, a_i) {\color{purple}{\sum_{k=0}^{K-1} \ln \pi^{\bar{\theta}}\left(a_i^{k+1} | a_i^k, o_i\right)}} + \alpha \cdot \mathcal{R}\left(\mathbf{a}_i, o_i; \bar{\theta}, \bar{\theta}_{\mathrm{old}}\right) \Big]\end{aligned}\]</div>where \(\bar{\theta} := [\theta, \theta']\).</span></div>
-            <div class="line-numbered"><span class="line-number">16</span><span class="line-content">Return: fine-tuned flow policy's velocity \(v_\theta\).</span></div>
+            <div class="line-numbered"><span class="line-number">16</span><span class="line-content"><b>Return:</b> fine-tuned flow policy's velocity \(v_\theta\).</span></div>
         </div>
     <!-- </details> -->
     </li>
