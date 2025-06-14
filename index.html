@@ -406,8 +406,8 @@
             <div class="line-numbered"><span class="line-number">11</span><span class="line-content indent-1">Sample \(\{\mathbf{a}_i, o_i, r_i, d_i\}_{i=1}^B\) from buffer.</span></div>
             <div class="line-numbered"><span class="line-number">12</span><span class="line-content indent-1">Compute transition probability for all denoising step \(k\) and tuple \(i\):</span></div>
             <div class="line-numbered"><span class="line-number">13</span><span class="line-content indent-1"><div class="math">\[{\color{purple}{\ln \pi^{\bar{\theta}}\left(a_i^{k+1} | a_i^k, o_i\right)} = \ln \mathcal{N}\left(a_i^{k+1} \mid a_i^k + v_\theta(t_k, a_i^k, o_i) \Delta t_k\ , \ {\color{purple}{\sigma_{\theta'}^2(t_k, a_i^k, o_i)}}\right)}\]</div></span></div>
-            <div class="line-numbered"><span class="line-number">14</span><span class="line-content indent-1">Call a sub-routine to estimate the advantage \(A^{\bar{\theta}_{\mathrm{old}}}\), 
-                and jointly optimize \(\theta\) and \(\theta'\) by minimizing</span></div>
+            <div class="line-numbered"><span class="line-number">14</span><span class="line-content indent-1">Estimate advantage \(A^{\bar{\theta}_{\mathrm{old}}}\) by a sub-routine and 
+                jointly optimize \(\theta\) and \(\theta'\) by</span></div>
             <div class="line-numbered"><span class="line-number">15</span><span class="line-content indent-1"><div class="math">\[\begin{aligned}\theta, \theta' = \underset{\theta, \theta'}{\mathrm{argmin}} \frac{1}{B} \sum_{i=1}^B \Big[ & -A^{\bar{\theta}_{\mathrm{old}}}(o_i, a_i) {\color{purple}{\sum_{k=0}^{K-1} \ln \pi^{\bar{\theta}}\left(a_i^{k+1} | a_i^k, o_i\right)}} + \alpha \cdot \mathcal{R}\left(\mathbf{a}_i, o_i; \bar{\theta}, \bar{\theta}_{\mathrm{old}}\right) \Big]\end{aligned}\]</div>where \(\bar{\theta} := [\theta, \theta']\).</span></div>
             <div class="line-numbered"><span class="line-number">16</span><span class="line-content">Return: fine-tuned flow policy's velocity \(v_\theta\).</span></div>
         </div>
