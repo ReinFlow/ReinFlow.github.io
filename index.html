@@ -259,9 +259,38 @@
         margin: 0;
         padding: 0;
         }
-        
-        
+        .algorithm {
+            margin-top: 1em;
+            border: 2px solid black;
+            padding: 1em;
+            font-family: monospace;
+        }
+        .caption {
+            font-weight: bold;
+            margin-bottom: 0.5em;
+        }
+        .line-numbered {
+            display: flex;
+            margin-bottom: 0.5em;
+        }
+        .line-number {
+            width: 3em;
+            text-align: right;
+            padding-right: 1em;
+            color: gray;
+        }
+        .line-content {
+            flex: 1;
+        }
+        .indent-1 { margin-left: 2em; }
+        .indent-2 { margin-left: 4em; }
+        .indent-3 { margin-left: 6em; }
+        .math {
+            margin: 0.5em 0;
+        }
     </style>
+    
+    
 
 <!-- Include arXiv icon if not already loaded -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.2/css/academicons.min.css">
@@ -357,77 +386,38 @@
         <li style="margin-bottom: 12px;">
             <strong>Routine</strong>
             <ul style="list-style: disc; padding-left: 20px;">
-                <li>
-    Fine-tuning flow matching policy with ReinFlow involves these steps: rollout, extract features, add noise, discard noise.
-    <details>
-        <summary style="cursor: pointer; color: blue; text-decoration: underline;">
+    <li>
+    We provide a pseudocode of fine-tuning flow matching policy with ReinFlow. 
+    <!-- <details> -->
+        <!-- <summary style="cursor: pointer; color: blue; text-decoration: underline;">
             Click here to see the whole algorithm pseudocode.
-        </summary>
-        <div class="algorithm" id="alg-ReinFlow" style="margin-top: 1em;">
-            <div class="caption">Algorithm 1: ReinFlow</div>
-            <ol>
-                <li>
-                    Input: pre-trained flow matching policy's velocity field \(v_\theta\); denoising step number \(K\), discount factor \(\gamma\), batch size \(B\), discretization scheme \(0 = t_0 < t_1 < \ldots < t_K = 1\) with \(\Delta t_k := t_{k+1} - t_k\), regularization function \(\mathcal{R}\) with intensity \(\alpha \in \mathbb{R}\).
-                </li>
-                <li>
-                    Initialize: noise injection network \(\theta'\).
-                </li>
-                <li>
-                    While not converged:
-                    <ol>
-                        <li>Restore last iteration's parameters: \(\bar{\theta}_{\mathrm{old}} \leftarrow \mathrm{stop\_grad}([\theta, \theta'])\).</li>
-                        <li>Reset environment and receive initial observation \(o\).</li>
-                        <li>
-                            While not done:
-                            <span class="comment">Rollout policy \(\pi\).</span>
-                            <ol>
-                                <li>Sample \(a^0 \sim \mathcal{N}(0, \mathbb{I}_{d_A})\).</li>
-                                <li>
-                                    For denoising step \(k \in \{0, 1, \ldots, K-1\}\):
-                                    <span class="comment">Inject noise and integrate.</span>
-                                    <ol>
-                                        <li>
-                                            \(a^{k+1} \leftarrow a^k + v_\theta(t_k, a^k, o) \Delta t_k + \sigma_{\theta'}(t_k, a^k, o) \epsilon\), where \(\epsilon \sim \mathcal{N}(0, \mathbb{I}_{d_A})\).
-                                        </li>
-                                    </ol>
-                                </li>
-                                <li>Record denoised actions \(a^0, a^1, \ldots, a^K\) in a buffer.</li>
-                                <li>Play action \(a = a^K\), receive reward \(r\) and done flag \(d\), update observation \(o\).</li>
-                                <li>Store \(\{\mathbf{a}, o, r, d\}\) to buffer, where \(\mathbf{a} := (a^0, a^1, \ldots, a^K)\).</li>
-                            </ol>
-                        </li>
-                        <li>Sample a batch \(\{\mathbf{a}_i, o_i, r_i, d_i\}_{i=1}^B\) from buffer. <span class="comment">Policy Optimization</span></li>
-                        <li>
-                            Compute the policy's transition probability for each denoising step \(k\) and tuple \((\mathbf{a}_i, o_i, r_i, d_i)\):
-                            <div>
-                                \[
-                                \ln \pi^{\bar{\theta}}(a_i^{k+1} | a_i^k, o_i) = \ln \mathcal{N}\left(a_i^{k+1} \mid a_i^k + v_\theta(t_k, a_i^k, o_i) \Delta t_k, \sigma_{\theta'}^2(t_k, a_i^k, o_i)\right)
-                                \]
-                            </div>
-                        </li>
-                        <li>Compute the regularization function \(\mathcal{R}(\mathbf{a}_i, o_i; \bar{\theta}, \bar{\theta}_{\mathrm{old}})\).</li>
-                        <li>
-                            Call a policy gradient sub-routine to jointly optimize \(\theta\) and \(\theta'\) by minimizing the loss:
-                            <div>
-                                \[
-                                \begin{aligned}
-                                \theta, \theta' = \underset{\theta, \theta'}{\mathrm{argmin}} \frac{1}{B} \sum_{i=1}^B \Big[ & -A^{\bar{\theta}_{\mathrm{old}}}(o_i, a_i) \sum_{k=0}^{K-1} \ln \pi^{\bar{\theta}}(a_i^{k+1} | a_i^k, o_i) + \alpha \cdot \mathcal{R}(\mathbf{a}_i, o_i; \bar{\theta}, \bar{\theta}_{\mathrm{old}}) \Big]
-                                \end{aligned}
-                                \]
-                            </div>
-                            where \(\bar{\theta} := [\theta, \theta']\).
-                        </li>
-                    </ol>
-                </li>
-                <li>Return: fine-tuned flow matching policy's velocity field \(v_\theta\).</li>
-            </ol>
+        </summary> -->
+        <div class="algorithm" id="alg-ReinFlow">
+            <div class="caption">ReinFlow</div>
+            <div class="line-numbered"><span class="line-number">1</span><span class="line-content">Input: pre-trained flow's velocity \(v_\theta\); denoising step \(K\), discount \(\gamma\), batch size \(B\), discretization scheme \(0 = t_0 < t_1 < \ldots < t_K = 1\) with \(\Delta t_k := t_{k+1} - t_k\), regularizor \(\mathcal{R}\) with intensity \(\alpha \in \mathbb{R}\).</span></div>
+            <div class="line-numbered"><span class="line-number">2</span><span class="line-content">While not converged:</span></div>
+            <div class="line-numbered"><span class="line-number">3</span><span class="line-content indent-1">Restore \(\bar{\theta}_{\mathrm{old}} \leftarrow \mathrm{stop\_grad}([\theta, \theta'])\).</span></div>
+            <div class="line-numbered"><span class="line-number">4</span><span class="line-content indent-1">Reset env, receive observation \(o\).</span></div>
+            <div class="line-numbered"><span class="line-number">5</span><span class="line-content indent-1">While not done:</span></div>
+            <div class="line-numbered"><span class="line-number">6</span><span class="line-content indent-2">Sample \(a^0 \sim \mathcal{N}(0, \mathbb{I}_{d_A})\).</span></div>
+            <div class="line-numbered"><span class="line-number">7</span><span class="line-content indent-2">For denoising step \(k \in \{0, 1, \ldots, K-1\}\):</span></div>
+            <div class="line-numbered"><span class="line-number">8</span><span class="line-content indent-3">\(a^{k+1} \leftarrow a^k + v_\theta(t_k, a^k, o) \Delta t_k + {\color{purple}{\sigma_{\theta'}(t_k, a^k, o)}} \epsilon\), where \(\epsilon \sim \mathcal{N}(0, \mathbb{I}_{d_A})\).</span></div>
+            <div class="line-numbered"><span class="line-number">9</span><span class="line-content indent-2">Play action \(a = a^K\), receive reward \(r\) and done flag \(d\), update observation \(o\).</span></div>
+            <div class="line-numbered"><span class="line-number">10</span><span class="line-content indent-2">Store \(\{\mathbf{a}, o, r, d\}\) to buffer, where \(\mathbf{a} := (a^0, a^1, \ldots, a^K)\).</span></div>
+            <div class="line-numbered"><span class="line-number">11</span><span class="line-content indent-1">Sample \(\{\mathbf{a}_i, o_i, r_i, d_i\}_{i=1}^B\) from buffer.</span></div>
+            <div class="line-numbered"><span class="line-number">12</span><span class="line-content indent-1">Compute transition probability for all denoising step \(k\) and tuple \(i\):</span></div>
+            <div class="line-numbered"><span class="line-number">13</span><span class="line-content indent-1"><div class="math">\[{\color{purple}{\ln \pi^{\bar{\theta}}\left(a_i^{k+1} | a_i^k, o_i\right)} = \ln \mathcal{N}\left(a_i^{k+1} \mid a_i^k + v_\theta(t_k, a_i^k, o_i) \Delta t_k\ , \ {\color{purple}{\sigma_{\theta'}^2(t_k, a_i^k, o_i)}}\right)}\]</div></span></div>
+            <div class="line-numbered"><span class="line-number">14</span><span class="line-content indent-1">Call a sub-routine to estimate the advantage \(A^{\bar{\theta}_{\mathrm{old}}}\), 
+                and jointly optimize \(\theta\) and \(\theta'\) by minimizing</span></div>
+            <div class="line-numbered"><span class="line-number">15</span><span class="line-content indent-1"><div class="math">\[\begin{aligned}\theta, \theta' = \underset{\theta, \theta'}{\mathrm{argmin}} \frac{1}{B} \sum_{i=1}^B \Big[ & -A^{\bar{\theta}_{\mathrm{old}}}(o_i, a_i) {\color{purple}{\sum_{k=0}^{K-1} \ln \pi^{\bar{\theta}}\left(a_i^{k+1} | a_i^k, o_i\right)}} + \alpha \cdot \mathcal{R}\left(\mathbf{a}_i, o_i; \bar{\theta}, \bar{\theta}_{\mathrm{old}}\right) \Big]\end{aligned}\]</div>where \(\bar{\theta} := [\theta, \theta']\).</span></div>
+            <div class="line-numbered"><span class="line-number">16</span><span class="line-content">Return: fine-tuned flow policy's velocity \(v_\theta\).</span></div>
         </div>
-    </details>
-</li>
-
-            </ul>
-            <strong>Structure of the Noise:</strong>
-            <ul style="list-style: disc; padding-left: 20px;">
+    <!-- </details> -->
+    </li>
+    <br>
+    </ul>
+        <strong>Structure of the Noise:</strong>
+        <ul style="list-style: disc; padding-left: 20px;">
                 <li><strong>Zero-mean:</strong> The noise injected is a magnitude-modulated centered Gaussian noise, matching the dimensions of the actions.</li>
                 <li><strong>Bounded:</strong> 
                     <ul style="list-style: circle; padding-left: 20px;">
@@ -830,8 +820,8 @@
             </ul>
         </li>
         <li style="margin-bottom: 12px;">
-            <p><strong>Flow models have an exact probability expression, 
-                why not use it directly?</strong></p>
+            <strong>Flow models have an exact probability expression, 
+                why not use it directly?</strong>
             <ul style="list-style: disc; padding-left: 20px; font-family: Arial, sans-serif; max-width: 800px;">
         <li>Flow models' exact solution, 
             \[
