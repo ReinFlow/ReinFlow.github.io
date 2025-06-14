@@ -872,48 +872,33 @@
             </ul>
         </li>
         <li style="margin-bottom: 12px;">
-            <strong>What is the relationship between 
-                ReinFlow and ODE-SDE conversion?</strong> 
-            ReinFlow augments the pre-trained flow ODE to a non-linear stochastic differential equation for enhanced generation diversity and exploration.
+            <strong>What is the ReinFlow related to ODE-SDE conversion?</strong> 
+            When the denoising step count is large enough, 
+            ReinFlow can be viewed as 
+            augmenting the pre-trained flow ODE to a non-linear stochastic differential equation, which enhances generation diversity and exploration.
             <p style="text-align: center;">\[
             \begin{align}
-                \text{SDE in its general form:}\ \ \mathrm{d}X_t &= f(X_t, t) \ \mathrm{d}t + \sigma(X_t, t) \, \mathrm{d}W_t \\
-                \text{ReinFlow's update:}\ \ a^{k+1} - a^k &=v_\theta(t_k, a^k, o) \Delta t_k + \sigma_{\theta'}(t_k, a^k, o) \sqrt{\Delta t_k} \, \epsilon, \quad \epsilon \sim \mathcal{N}(0, \mathbb{I}_{d_A})
+                \text{SDE general form:}\ \ \qquad \ \ \mathrm{d}X_t &= \quad f(X_t, t) \ \ \  \mathrm{d}t \ \ 
+                + \qquad {\color{purple}{
+                    \sigma(X_t, t)
+                }} \, \mathrm{d}W_t \\
+                \text{ReinFlow's update:}\ \ a^{k+1} - a^k &=
+                \underbrace{v_\theta(t_k, a^k, o) \Delta t_k}_\text{Drift}
+                + 
+                \underbrace{{\color{purple}{
+                    \sigma_{\theta'}(t_k, a^k, o)
+                }}\sqrt{\Delta t_k} \ \epsilon}_{\text{Diffusion}}
+                , \quad \epsilon \sim \mathcal{N}(0, \mathbb{I}_{d_A})
             \end{align}
-            \]</p>
-            <!-- <table style="width: 100%; border-collapse: collapse; margin-top: 10px; text-align: center;">
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <th style="padding: 8px;">General SDE</th>
-                    <th style="padding: 8px;">ReinFlow Update Rule</th>
-                    <th style="padding: 8px;">Description</th>
-                </tr>
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding: 8px;">\[ \mathrm{d}X_t \]</td>
-                    <td style="padding: 8px;">\[ a^{k+1}-a^{k} \]</td>
-                    <td style="padding: 8px;">\( X_t \) is the random variable at time \( t \), corresponding to action \( a_t \) in ReinFlow.</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding: 8px;">\[ f(X_t, t) \, \mathrm{d}t \]</td>
-                    <td style="padding: 8px;">\[ v_\theta(t_k, a^k, o) \Delta t_k \]</td>
-                    <td style="padding: 8px;">\( f(X_t, t) \) is the drift term (deterministic component), analogous to the pre-trained flow’s velocity network \( v_\theta \).</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding: 8px;">\[ \sigma(X_t, t) \]</td>
-                    <td style="padding: 8px;">\[ \sigma_{\theta'}(t_k, a^k, o) \]</td>
-                    <td style="padding: 8px;">\( \sigma(X_t, t) \) is the diffusion term (random component), which ReinFlow learns as \( \sigma_{\theta'} \).</td>
-                </tr>
-                <tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding: 8px;">\[ \mathrm{d}W_t \]</td>
-                    <td style="padding: 8px;">\[ \sqrt{\Delta t_k} \epsilon^{\ *} \]</td>
-                    <td style="padding: 8px;">\( W_t \) is a Wiener process (Brownian motion), discretized to Gaussian noise \( \sqrt{\Delta t_k} \epsilon \).</td>
-                </tr>
-            </table> -->
+            \]
+            </p>
             <p style="font-size: 0.9em; margin-top: 8px;"><sup>*</sup> Note: The \( \sqrt{\Delta t_k} \) term is omitted when using uniform discretization, as it is equivalent to scaling \( \sigma_{\theta'} \)'s output.</p>
-        </li>
+            <span style="color: purple;">However, the analogy above is just one way to understand our approach, but now how it was invented.</span>
+            Unlike methods that simulate a continuous-time stochastic differential equation (SDE), which need very small steps to avoid errors, ReinFlow models the flow policy as a discrete-time process during inference. This allows it to fine-tune with fewer denoising steps while still accurately evaluating probabilities.        </li>
         <li style="margin-bottom: 12px;">
             <strong>How does ReinFlow differ from diffusion?</strong>
             <ul style="list-style: disc; padding-left: 20px;">
-                <li>Retains a deterministic component.</li>
+                <li>ReinFlow still retains a deterministic component (the velocity) obtained from pre-training.</li>
                 <li>Noise is introduced only during fine-tuning, recovers an ODE after fine-tuning.</li>
             </ul>
         </li>
